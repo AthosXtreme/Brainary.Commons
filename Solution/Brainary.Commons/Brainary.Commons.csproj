@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C8BB793B-1CA0-4D4B-B1ED-3C7DD33F621F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Brainary.Commons</RootNamespace>
+    <AssemblyName>Brainary.Commons</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Drops\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Drops\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Annotations\DecimalPrecisionAttribute.cs" />
+    <Compile Include="Data\EntityAlreadyExistsException.cs" />
+    <Compile Include="Data\EntityDoesNotExistsException.cs" />
+    <Compile Include="Locator.cs" />
+    <Compile Include="EventLogger.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Data\ExecuteQueryResult.cs" />
+    <Compile Include="Data\ExecuteResult.cs" />
+    <Compile Include="Data\ExecuteScalarResult.cs" />
+    <Compile Include="Data\IDataAccess.cs" />
+    <Compile Include="Data\IResultQuery.cs" />
+    <Compile Include="Data\Patterns\Specification\AndSpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\CompositeSpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\DirectSpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\ExpressionBuilder.cs" />
+    <Compile Include="Data\Patterns\Specification\ISpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\NotSpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\OrSpecification.cs" />
+    <Compile Include="Data\Patterns\Specification\ParametersRebinder.cs" />
+    <Compile Include="Data\Patterns\Specification\Specification.cs" />
+    <Compile Include="Data\Patterns\Specification\TrueSpecification.cs" />
+    <Compile Include="Data\ResultQuery.cs" />
+    <Compile Include="Data\SpCommand.cs" />
+    <Compile Include="Data\Xml\XmlParameter.cs" />
+    <Compile Include="Data\Xml\XmlParameterList.cs" />
+    <Compile Include="Domain\Contracts\IRepository.cs" />
+    <Compile Include="Domain\Contracts\ISpecificationQuery.cs" />
+    <Compile Include="Domain\Entity.cs" />
+    <Compile Include="Dynamic\ClassFactory.cs" />
+    <Compile Include="Dynamic\DynamicClass.cs" />
+    <Compile Include="Dynamic\DynamicExpression.cs" />
+    <Compile Include="Dynamic\DynamicLinq.cs" />
+    <Compile Include="Dynamic\DynamicOrdering.cs" />
+    <Compile Include="Dynamic\DynamicProperty.cs" />
+    <Compile Include="Dynamic\ExpressionParser.cs" />
+    <Compile Include="Dynamic\ParseException.cs" />
+    <Compile Include="Extensions\String.cs" />
+    <Compile Include="Extensions\Enum.cs" />
+    <Compile Include="Extensions\Xml.cs" />
+    <Compile Include="Extensions\Reflection.cs" />
+    <Compile Include="Dynamic\Signature.cs" />
+    <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Extensions\Csv.cs" />
+    <Compile Include="ILocator.cs" />
+    <Compile Include="Messages.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Messages.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="Validation\Attributes\AtLeastOneRequiredAttribute.cs" />
+    <Compile Include="Validation\Attributes\DigitsAttribute.cs" />
+    <Compile Include="Validation\Attributes\RequiredWhenParentAttribute.cs" />
+    <Compile Include="Validation\Attributes\DateGreaterThanAttribute.cs" />
+    <Compile Include="Validation\Attributes\DateLessThanAttribute.cs" />
+    <Compile Include="Validation\Attributes\EmailAttribute.cs" />
+    <Compile Include="Validation\Attributes\RutAttribute.cs" />
+    <Compile Include="Validation\EntityValidationResult.cs" />
+    <Compile Include="Validation\EntityValidator.cs" />
+    <Compile Include="Validation\ValidationHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Messages.es.resx" />
+    <EmbeddedResource Include="Messages.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Messages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
