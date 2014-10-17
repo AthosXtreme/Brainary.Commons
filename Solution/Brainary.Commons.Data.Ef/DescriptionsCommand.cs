@@ -4,22 +4,21 @@
 
     public abstract class DescriptionsCommand
     {
-        protected DescriptionsCommand(string scriptTemplate, string relativeScriptPath)
+        protected DescriptionsCommand(string resultScriptFilePath, string columnDescriptionsTemplate)
         {
-            if (scriptTemplate == null) throw new ArgumentNullException("scriptTemplate");
-            if (relativeScriptPath == null) throw new ArgumentNullException("relativeScriptPath");
+            if (resultScriptFilePath == null) throw new ArgumentNullException("resultScriptFilePath");
+            if (columnDescriptionsTemplate == null) throw new ArgumentNullException("columnDescriptionsTemplate");
 
-            Template = scriptTemplate;
-            Path = relativeScriptPath;
+            ResultScriptFilePath = resultScriptFilePath;
+            ColumnDescriptionsTemplate = columnDescriptionsTemplate;
         }
 
-        public string Template { get; private set; }
+        public string ResultScriptFilePath { get; protected set; }
 
-        public string Path { get; private set; }
+        public string ColumnDescriptionsTemplate { get; protected set; }
 
-        public virtual void Execute(DbContext context, string script)
-        {
-            context.Database.ExecuteSqlCommand(script);
-        }
+        public string EnumsReferenceTableScript { get; protected set; }
+
+        public string EnumsReferenceTemplate { get; protected set; }
     }
 }

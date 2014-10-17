@@ -40,18 +40,22 @@
             if (DescriptionsCommand == null)
                 throw new InvalidOperationException(Messages.DescriptionsCommandNotSet);
 
-            var writer = File.CreateText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescriptionsCommand.Path));
+            var path = Path.IsPathRooted(DescriptionsCommand.ResultScriptFilePath) ? DescriptionsCommand.ResultScriptFilePath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescriptionsCommand.ResultScriptFilePath);
+            var writer = File.CreateText(path);
 
             foreach (var script in EntityTypes.SelectMany(
                 etype => (from pinfo in etype.GetProperties() 
                           let attribute = pinfo.GetCustomAttribute<DescriptionAttribute>() 
                           where IsField(pinfo) && attribute != null 
-                          select string.Format(DescriptionsCommand.Template, GetTableName(etype.Name), pinfo.Name, attribute.Description))))
+                          select string.Format(DescriptionsCommand.ColumnDescriptionsTemplate, GetTableName(etype.Name), pinfo.Name, attribute.Description))))
             {
                 writer.WriteLine(script);
                 writer.Flush();
-                DescriptionsCommand.Execute(this, script);
+                Database.ExecuteSqlCommand(script);
             }
+
+            if (DescriptionsCommand.EnumsReferenceTableScript != null && DescriptionsCommand.EnumsReferenceTemplate != null)
+                SetEnumsReference(writer);
 
             writer.Close();
             writer.Dispose();
@@ -85,6 +89,24 @@
                 pinfo.PropertyType == typeof(decimal) ||
                 pinfo.PropertyType == typeof(decimal?) ||
                 pinfo.PropertyType == typeof(string);
+        }
+
+        private void SetEnumsReference(StreamWriter writer)
+        {
+            writer.WriteLine(DescriptionsCommand.EnumsReferenceTableScript);
+            writer.Flush();
+            Database.ExecuteSqlCommand(DescriptionsCommand.EnumsReferenceTableScript);
+
+            foreach (var script in EntityTypes.SelectMany(
+                s => s.GetProperties().Where(w => w.PropertyType.IsEnum || w.PropertyType.IsNullableEnum())
+                    .Select(t => Nullable.GetUnderlyingType(t.PropertyType) ?? t.PropertyType)).Distinct()
+                    .SelectMany(e => Enum.GetValues(e).Cast<Enum>()
+                    .Select(v => string.Format(DescriptionsCommand.EnumsReferenceTemplate, e.Name, v.ToString("G"), v.GetDescription(), Convert.ToInt32(v)))))
+            {
+                writer.WriteLine(script);
+                writer.Flush();
+                Database.ExecuteSqlCommand(script);
+            }
         }
     }
 }
