@@ -1,4 +1,4 @@
-﻿namespace Brainary.Commons.Web.Validation.Attributes
+﻿namespace Brainary.Commons.Web.Mvc.Validation.Attributes
 {
     using System;
     using System.Collections.Generic;

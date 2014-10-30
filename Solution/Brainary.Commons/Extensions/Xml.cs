@@ -14,10 +14,23 @@
         /// <returns>Xml string</returns>
         public static string Serialize<T>(this T instance) where T : class
         {
+            return Serialize(instance, false);
+        }
+
+        /// <summary>
+        /// Serialize an object to xml
+        /// </summary>
+        /// <typeparam name="T">Object type</typeparam>
+        /// <param name="instance">Object instance</param>
+        /// <param name="omitXmlDeclaration">Prevent XML declaration tag on first line</param>
+        /// <returns>Xml string</returns>
+        public static string Serialize<T>(this T instance, bool omitXmlDeclaration) where T : class
+        {
             var serializer = new XmlSerializer(typeof(T));
+            var settings = new XmlWriterSettings { OmitXmlDeclaration = omitXmlDeclaration };
             using (var sw = new StringWriter())
             {
-                var writer = XmlWriter.Create(sw);
+                var writer = XmlWriter.Create(sw, settings);
                 serializer.Serialize(writer, instance);
                 return sw.ToString();
             }

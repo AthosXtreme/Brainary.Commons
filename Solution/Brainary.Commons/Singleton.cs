@@ -11,9 +11,8 @@
     {
         private static T instance;
 
-        // ReSharper disable EmptyConstructor
+        // ReSharper disable once EmptyConstructor
         protected Singleton()
-        // ReSharper restore EmptyConstructor
         {
         }
 
@@ -36,7 +35,7 @@
 
         private static class SingletonCreator
         {
-            // ReSharper disable StaticFieldInGenericType
+            // ReSharper disable once StaticFieldInGenericType
             internal static readonly T Instance = instance;
 
             [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", Justification = "Reviewed. Suppression is OK here.")]

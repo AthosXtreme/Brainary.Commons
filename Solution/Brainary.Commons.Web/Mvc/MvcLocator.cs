@@ -1,44 +1,44 @@
-﻿namespace Brainary.Commons.Web
+﻿namespace Brainary.Commons.Web.Mvc
 {
     using System.Web.Mvc;
 
     /// <summary>
-    /// Singleton global resolver implementation of <see cref="ILocator"/>
+    /// Singleton MVC resolver implementation of <see cref="IMvcLocator"/>
     /// </summary>
-    public sealed class Locator : SingletonLocator<Locator>, ILocator
+    public sealed class MvcLocator : SingletonLocator<MvcLocator>, IMvcLocator
     {
-        private ILocator locatorInstance;
+        private IMvcLocator locatorInstance;
 
         #region "Singleton Implementation"
         // Deny constructor
-        private Locator()
+        private MvcLocator()
         {
         }
 
         /// <summary>
         /// Singleton instance
         /// </summary>
-        public static ILocator Instance
+        public static IMvcLocator Instance
         {
             get
             {
                 if (!Initialised)
                 {
-                    Init(new Locator());
+                    Init(new MvcLocator());
                 }
 
                 return UniqueInstance;
             }
         }
         #endregion
-
+        
         /// <summary>
         /// Must call this before use
         /// </summary>
         /// <param name="locator">Implemented container</param>
-        public static void Initialize(ILocator locator)
+        public static void Initialize(IMvcLocator locator)
         {
-            var instance = (Locator)Instance;
+            var instance = (MvcLocator)Instance;
             instance.BaseInitialize(locator);
             instance.locatorInstance = locator;
         }
@@ -65,12 +65,6 @@
         {
             AssertInitialize();
             return locatorInstance.GetMvcDependencyResolver();
-        }
-
-        public void RegisterWcfComponents()
-        {
-            AssertInitialize();
-            locatorInstance.RegisterWcfComponents();
         }
     }
 }

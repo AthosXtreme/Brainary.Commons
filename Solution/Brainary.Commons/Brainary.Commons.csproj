@@ -37,6 +37,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -45,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\DecimalPrecisionAttribute.cs" />
+    <Compile Include="Domain\BusinessException.cs" />
+    <Compile Include="Domain\ServiceError.cs" />
+    <Compile Include="SingletonLocator.cs" />
     <Compile Include="Data\EntityAlreadyExistsException.cs" />
     <Compile Include="Data\EntityDoesNotExistsException.cs" />
     <Compile Include="Locator.cs" />

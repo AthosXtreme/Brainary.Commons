@@ -1,11 +1,11 @@
-﻿namespace Brainary.Commons.Web
+﻿namespace Brainary.Commons.Web.Mvc
 {
     using System;
     using System.Web.Configuration;
     using System.Web.Mvc;
 
     /// <summary>
-    /// Perform if DisableAuthorization configuration appsetting is false
+    /// Avoid authorization if DisableAuthorization appsetting is true
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
     public class AuthorizeEnabledAttribute : HandleUnauthorizedAttribute

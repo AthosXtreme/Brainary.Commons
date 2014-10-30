@@ -1,20 +1,23 @@
 ﻿namespace Brainary.Commons.Unity.Behaviors
 {
+    using System.ServiceModel;
+
+    using Brainary.Commons.Domain;
+
     using Microsoft.Practices.Unity.InterceptionExtension;
 
-    public class ExceptionLogBehavior : Behavior
+    public class ServiceExceptionHandlerBehavior : Behavior
     {
-        public ExceptionLogBehavior(ILogger logger)
+        public ServiceExceptionHandlerBehavior(ILogger logger)
             : base(logger)
         {
         }
 
         public override IMethodReturn CleanInvoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
-            var targetType = GetRealTargetType(input);
             var result = getNext()(input, getNext);
             if (result.Exception != null)
-                Logger.Error(string.Format(Messages.ExceptionAt, targetType.Name, input.MethodBase.Name), result.Exception);
+                throw new FaultException<ServiceError>(new ServiceError(result.Exception));
 
             return result;
         }

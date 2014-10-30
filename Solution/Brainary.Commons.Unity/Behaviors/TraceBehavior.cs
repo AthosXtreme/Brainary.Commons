@@ -27,10 +27,9 @@
             }
         }
 
-        public override IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
+        public override IMethodReturn CleanInvoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
         {
-            var targetType = GetImplementingType(input);
-            if (targetType.Assembly != input.MethodBase.Module.Assembly) return getNext()(input, getNext);
+            var targetType = GetRealTargetType(input);
 
             var sb = new StringBuilder();
             sb.AppendFormat(Messages.CallTo, targetType.Name, input.MethodBase.Name);

@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons", "Brainary.Commons\Brainary.Commons.csproj", "{C8BB793B-1CA0-4D4B-B1ED-3C7DD33F621F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{708BC4A7-C7F1-4119-B91A-2311ECEC682B}"
@@ -28,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.La
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.Log4Net", "Brainary.Commons.Logging.Log4Net\Brainary.Commons.Logging.Log4Net.csproj", "{9D573A0F-8B37-4A7D-95E5-8BD196D50834}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.NLog", "Brainary.Commons.Logging.NLog\Brainary.Commons.Logging.NLog.csproj", "{349EB99B-44F6-4935-9194-9DB07FA02A18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,14 +50,6 @@ Global
 		{67C29579-99CC-4797-B55C-A34A71D667E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67C29579-99CC-4797-B55C-A34A71D667E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67C29579-99CC-4797-B55C-A34A71D667E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53895522-C72C-499E-9686-D08329E351B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53895522-C72C-499E-9686-D08329E351B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53895522-C72C-499E-9686-D08329E351B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53895522-C72C-499E-9686-D08329E351B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C8BD6B6-1F83-45A7-9E00-9172E16D0DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C8BD6B6-1F83-45A7-9E00-9172E16D0DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C8BD6B6-1F83-45A7-9E00-9172E16D0DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C8BD6B6-1F83-45A7-9E00-9172E16D0DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AC72872F-5C00-46EC-A2D7-E4D286A206A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC72872F-5C00-46EC-A2D7-E4D286A206A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC72872F-5C00-46EC-A2D7-E4D286A206A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,12 +70,16 @@ Global
 		{9D573A0F-8B37-4A7D-95E5-8BD196D50834}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D573A0F-8B37-4A7D-95E5-8BD196D50834}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D573A0F-8B37-4A7D-95E5-8BD196D50834}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;EnterpriseLibrary.Data.6.0.1304.0\lib\NET45;EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
 		EnterpriseLibraryConfigurationToolBinariesPath = ..\Packages\Unity.2.1.505.2\lib\NET35;..\Packages\Unity.Interception.2.1.505.2\lib\NET35;..\Packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;EnterpriseLibrary.Data.6.0.1304.0\lib\NET45;EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

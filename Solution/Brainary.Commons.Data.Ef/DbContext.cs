@@ -40,8 +40,14 @@
             if (DescriptionsCommand == null)
                 throw new InvalidOperationException(Messages.DescriptionsCommandNotSet);
 
-            var path = Path.IsPathRooted(DescriptionsCommand.ResultScriptFilePath) ? DescriptionsCommand.ResultScriptFilePath : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescriptionsCommand.ResultScriptFilePath);
-            var writer = File.CreateText(path);
+            var fileinfo = new FileInfo(
+                    Path.IsPathRooted(DescriptionsCommand.ResultScriptFilePath)
+                        ? DescriptionsCommand.ResultScriptFilePath
+                        : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescriptionsCommand.ResultScriptFilePath));
+            
+            if (fileinfo.Directory != null) fileinfo.Directory.Create();
+
+            var writer = File.CreateText(fileinfo.FullName);
 
             foreach (var script in EntityTypes.SelectMany(
                 etype => (from pinfo in etype.GetProperties() 

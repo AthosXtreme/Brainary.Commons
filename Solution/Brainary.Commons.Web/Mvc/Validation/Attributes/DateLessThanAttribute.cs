@@ -1,13 +1,17 @@
-﻿namespace Brainary.Commons.Web.Validation.Attributes
+﻿namespace Brainary.Commons.Web.Mvc.Validation.Attributes
 {
     using System;
     using System.Collections.Generic;
     using System.Web.Mvc;
 
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
-    public sealed class DateGreaterThanAttribute : Commons.Validation.Attributes.DateGreaterThanAttribute, IClientValidatable
+    public sealed class DateLessThanAttribute : Commons.Validation.Attributes.DateLessThanAttribute, IClientValidatable
     {
-        public DateGreaterThanAttribute(string propertyName = null)
+        public DateLessThanAttribute()
+        {
+        }
+
+        public DateLessThanAttribute(string propertyName)
             : base(propertyName)
         {
         }
@@ -17,7 +21,7 @@
             var rule = new ModelClientValidationRule
             {
                 ErrorMessage = FormatErrorMessage(metadata.GetDisplayName()),
-                ValidationType = "dategreaterthan"
+                ValidationType = "datelessthan"
             };
             rule.ValidationParameters["property"] = PropertyName;
             rule.ValidationParameters["allowequal"] = AllowEqual;

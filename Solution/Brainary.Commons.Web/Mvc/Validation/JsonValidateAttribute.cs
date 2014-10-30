@@ -1,4 +1,4 @@
-﻿namespace Brainary.Commons.Web.Validation
+﻿namespace Brainary.Commons.Web.Mvc.Validation
 {
     using System;
     using System.Linq;
