@@ -14,7 +14,7 @@
         /// <returns>Xml string</returns>
         public static string Serialize<T>(this T instance) where T : class
         {
-            return Serialize(instance, false);
+            return Serialize(instance, null);
         }
 
         /// <summary>
@@ -22,12 +22,11 @@
         /// </summary>
         /// <typeparam name="T">Object type</typeparam>
         /// <param name="instance">Object instance</param>
-        /// <param name="omitXmlDeclaration">Prevent XML declaration tag on first line</param>
+        /// <param name="settings">Prevent XML declaration tag on first line</param>
         /// <returns>Xml string</returns>
-        public static string Serialize<T>(this T instance, bool omitXmlDeclaration) where T : class
+        public static string Serialize<T>(this T instance, XmlWriterSettings settings) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
-            var settings = new XmlWriterSettings { OmitXmlDeclaration = omitXmlDeclaration };
             using (var sw = new StringWriter())
             {
                 var writer = XmlWriter.Create(sw, settings);
