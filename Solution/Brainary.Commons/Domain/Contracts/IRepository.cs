@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using Data;
     using Data.Patterns.Specification;
@@ -13,6 +12,21 @@
     /// <typeparam name="T">Concrete entity type</typeparam>
     public interface IRepository<T> where T : class, IEntity
     {
+        /// <summary>
+        /// Fires on created entity
+        /// </summary>
+        event EventHandler<T> EntityCreated;
+
+        /// <summary>
+        /// Fires on updated entity
+        /// </summary>
+        event EventHandler<T> EntityUpdated;
+
+        /// <summary>
+        /// Fires on removed entity
+        /// </summary>
+        event EventHandler<T> EntityRemoved;
+            
         /// <summary>
         /// Return all <typeparam name="T"></typeparam> matching the expression
         /// </summary>

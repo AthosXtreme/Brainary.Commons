@@ -22,6 +22,12 @@
             Context = context;
         }
 
+        public event EventHandler<T> EntityCreated;
+
+        public event EventHandler<T> EntityUpdated;
+
+        public event EventHandler<T> EntityRemoved;
+
         protected DbContext Context { get; set; }
 
         public virtual IEnumerable<T> AllMatching(Expression<Func<T, bool>> func)
@@ -49,6 +55,7 @@
 
             Context.Set<T>().Add(instance);
             Context.SaveChanges();
+            OnEntityCreated(instance);
         }
 
         public virtual void Commit()
@@ -81,6 +88,7 @@
             }
 
             Context.SaveChanges();
+            OnEntityUpdated(instance);
         }
 
         public void CreateOrUpdate(T instance)
@@ -89,7 +97,11 @@
                 throw new ArgumentNullException("instance");
 
             Context.Set<T>().AddOrUpdate(instance);
+            var state = Context.Entry(instance).State;
             Context.SaveChanges();
+
+            if (state == EntityState.Added) OnEntityCreated(instance);
+            if (state == EntityState.Modified) OnEntityUpdated(instance);
         }
 
         public virtual T FindById(int id)
@@ -113,6 +125,7 @@
             Context.Entry(instance).State = EntityState.Unchanged;
             Context.Set<T>().Remove(instance);
             Context.SaveChanges();
+            OnEntityRemoved(instance);
         }
 
         public virtual IResultQuery<T> Query(Expression<Func<T, bool>> func, int pageIndex, int resultPerPage)
@@ -158,6 +171,21 @@
                 action(this);
                 scope.Complete();
             }
+        }
+
+        protected virtual void OnEntityCreated(T instance)
+        {
+            if (EntityCreated != null) EntityCreated(this, instance);
+        }
+
+        protected virtual void OnEntityUpdated(T instance)
+        {
+            if (EntityUpdated != null) EntityUpdated(this, instance);
+        }
+
+        protected virtual void OnEntityRemoved(T instance)
+        {
+            if (EntityRemoved != null) EntityRemoved(this, instance);
         }
 
         protected int ParsePage(int current, int total, int page)
