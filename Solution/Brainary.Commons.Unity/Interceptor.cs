@@ -1,37 +1,12 @@
-﻿namespace Brainary.Commons.Unity.Behaviors
+﻿namespace Brainary.Commons.Unity
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
 
     using Microsoft.Practices.Unity.InterceptionExtension;
 
-    public abstract class Behavior : IInterceptionBehavior
+    public abstract class Interceptor
     {
-        protected readonly ILogger Logger;
-
-        protected Behavior(ILogger logger)
-        {
-            Logger = logger;
-        }
-
-        public virtual bool WillExecute
-        {
-            get { return true; }
-        }
-
-        public virtual IMethodReturn Invoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
-        {
-            return ShouldCleanInvoke(input) ? CleanInvoke(input, getNext) : getNext()(input, getNext);
-        }
-
-        public abstract IMethodReturn CleanInvoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext);
-
-        public virtual IEnumerable<Type> GetRequiredInterfaces()
-        {
-            return Type.EmptyTypes;
-        }
-
         protected static Type GetRealTargetType(IMethodInvocation input)
         {
             var type = input.Target.GetType();

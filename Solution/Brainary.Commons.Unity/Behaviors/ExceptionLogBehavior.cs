@@ -2,11 +2,13 @@
 {
     using Microsoft.Practices.Unity.InterceptionExtension;
 
-    public class ExceptionLogBehavior : Behavior
+    public class ExceptionLogBehavior : InterceptionBehavior
     {
+        private readonly ILogger logger;
+
         public ExceptionLogBehavior(ILogger logger)
-            : base(logger)
         {
+            this.logger = logger;
         }
 
         public override IMethodReturn CleanInvoke(IMethodInvocation input, GetNextInterceptionBehaviorDelegate getNext)
@@ -14,7 +16,7 @@
             var targetType = GetRealTargetType(input);
             var result = getNext()(input, getNext);
             if (result.Exception != null)
-                Logger.Error(string.Format(Messages.ExceptionAt, targetType.Name, input.MethodBase.Name), result.Exception);
+                logger.Error(string.Format(Messages.ExceptionAt, targetType.Name, input.MethodBase.Name), result.Exception);
 
             return result;
         }

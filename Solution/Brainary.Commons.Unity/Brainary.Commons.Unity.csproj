@@ -98,7 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\Behavior.cs" />
+    <Compile Include="Aspects\CallHandler.cs" />
+    <Compile Include="Behaviors\InterceptionBehavior.cs" />
     <Compile Include="Behaviors\ServiceExceptionHandlerBehavior.cs" />
     <Compile Include="Behaviors\TraceBehavior.cs" />
     <Compile Include="Behaviors\ExceptionLogBehavior.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Aspects\ExceptionLogAttribute.cs" />
     <Compile Include="Aspects\ExceptionLogInterceptor.cs" />
     <Compile Include="Aspects\IExceptionLogInterceptor.cs" />
+    <Compile Include="Interceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

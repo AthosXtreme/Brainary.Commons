@@ -12,11 +12,13 @@
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public class TraceBehavior : Behavior
+    public class TraceBehavior : InterceptionBehavior
     {
+        private readonly ILogger logger;
+
         public TraceBehavior(ILogger logger)
-            : base(logger)
         {
+            this.logger = logger;
         }
 
         public override bool WillExecute
@@ -55,7 +57,7 @@
             var result = getNext()(input, getNext);
             sw.Stop();
             sb.AppendFormat(Messages.Elapsed, sw.Elapsed.ToString("g"));
-            Logger.Info(sb.ToString());
+            logger.Info(sb.ToString());
 
             return result;
         }
