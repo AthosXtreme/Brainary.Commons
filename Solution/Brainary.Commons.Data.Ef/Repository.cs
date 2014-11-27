@@ -22,11 +22,11 @@
             Context = context;
         }
 
-        public event EventHandler<T> EntityCreated;
+        public event EventHandler<EventArgs<T>> EntityCreated;
 
-        public event EventHandler<T> EntityUpdated;
+        public event EventHandler<EventArgs<T>> EntityUpdated;
 
-        public event EventHandler<T> EntityRemoved;
+        public event EventHandler<EventArgs<T>> EntityRemoved;
 
         protected DbContext Context { get; set; }
 
@@ -175,17 +175,17 @@
 
         protected virtual void OnEntityCreated(T instance)
         {
-            if (EntityCreated != null) EntityCreated(this, instance);
+            if (EntityCreated != null) EntityCreated(this, new EventArgs<T>(instance));
         }
 
         protected virtual void OnEntityUpdated(T instance)
         {
-            if (EntityUpdated != null) EntityUpdated(this, instance);
+            if (EntityUpdated != null) EntityUpdated(this, new EventArgs<T>(instance));
         }
 
         protected virtual void OnEntityRemoved(T instance)
         {
-            if (EntityRemoved != null) EntityRemoved(this, instance);
+            if (EntityRemoved != null) EntityRemoved(this, new EventArgs<T>(instance));
         }
 
         protected int ParsePage(int current, int total, int page)

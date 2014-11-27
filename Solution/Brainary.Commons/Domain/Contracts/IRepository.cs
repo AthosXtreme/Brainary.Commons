@@ -15,17 +15,17 @@
         /// <summary>
         /// Fires on created entity
         /// </summary>
-        event EventHandler<T> EntityCreated;
+        event EventHandler<EventArgs<T>> EntityCreated;
 
         /// <summary>
         /// Fires on updated entity
         /// </summary>
-        event EventHandler<T> EntityUpdated;
+        event EventHandler<EventArgs<T>> EntityUpdated;
 
         /// <summary>
         /// Fires on removed entity
         /// </summary>
-        event EventHandler<T> EntityRemoved;
+        event EventHandler<EventArgs<T>> EntityRemoved;
             
         /// <summary>
         /// Return all <typeparam name="T"></typeparam> matching the expression

@@ -51,9 +51,9 @@
 
             foreach (var script in EntityTypes.SelectMany(
                 etype => (from pinfo in etype.GetProperties() 
-                          let attribute = pinfo.GetCustomAttribute<DescriptionAttribute>() 
-                          where IsField(pinfo) && attribute != null 
-                          select string.Format(DescriptionsCommand.ColumnDescriptionsTemplate, GetTableName(etype.Name), pinfo.Name, attribute.Description))))
+                          let attributes = pinfo.GetCustomAttributes<DescriptionAttribute>(AttributeTargets.Field) 
+                          where IsField(pinfo) && attributes.Any()
+                          select string.Format(DescriptionsCommand.ColumnDescriptionsTemplate, GetTableName(etype.Name), pinfo.Name, attributes.First().Description))))
             {
                 writer.WriteLine(script);
                 writer.Flush();
