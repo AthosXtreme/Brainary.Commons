@@ -43,12 +43,6 @@
             instance.locatorInstance = locator;
         }
 
-        public void RegisterMvcComponents()
-        {
-            AssertInitialize();
-            locatorInstance.RegisterMvcComponents();
-        }
-
         public IFilterProvider GetMvcFilterProvider()
         {
             AssertInitialize();

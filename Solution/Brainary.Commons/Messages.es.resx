@@ -121,16 +121,19 @@
     <value>Locator ya fue inicializado previamente</value>
   </data>
   <data name="AppSettingNotFound" xml:space="preserve">
-    <value>No se encontró la clave '{0}' en la sección appSettings</value>
+    <value>No se encontró la clave {0} en la sección appSettings</value>
   </data>
   <data name="AtLeastOneRequired" xml:space="preserve">
-    <value>Al menos un valor es requerido en el grupo '{0}'</value>
+    <value>Al menos un valor es requerido en el grupo {0}</value>
   </data>
   <data name="CallTo" xml:space="preserve">
     <value>Llamada a {0}.{1}</value>
   </data>
+  <data name="CannotInitializeMultiPublicCtors" xml:space="preserve">
+    <value>El tipo {0} contiene múltiples constructores públicos y no puede ser inicializado</value>
+  </data>
   <data name="ConnectionStringNotFound" xml:space="preserve">
-    <value>No se encontró el string de conexión '{0}'</value>
+    <value>No se encontró el string de conexión {0}</value>
   </data>
   <data name="DescriptionsCommandNotSet" xml:space="preserve">
     <value>La propiedad DescriptionsCommand no se ha establecido</value>
@@ -145,7 +148,7 @@
     <value>Locator no ha sido inicializado, debe llamar al método Initialize primero</value>
   </data>
   <data name="InvalidField" xml:space="preserve">
-    <value>El campo '{0}' es inválido</value>
+    <value>El campo {0} es inválido</value>
   </data>
   <data name="MissingObjectInstance" xml:space="preserve">
     <value>Referencia a objeto no establecida como instancia de un objeto</value>

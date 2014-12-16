@@ -70,7 +70,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ambiguous invocation of &apos;{0}&apos; constructor.
+        ///   Busca una cadena traducida similar a Ambiguous invocation of {0} constructor.
         /// </summary>
         public static string AmbiguousConstructorInvocation {
             get {
@@ -79,7 +79,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ambiguous invocation of indexer in type &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a Ambiguous invocation of indexer in type {0}.
         /// </summary>
         public static string AmbiguousIndexerInvocation {
             get {
@@ -88,7 +88,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Ambiguous invocation of method &apos;{0}&apos; in type &apos;{1}&apos;.
+        ///   Busca una cadena traducida similar a Ambiguous invocation of method {0} in type {1}.
         /// </summary>
         public static string AmbiguousMethodInvocation {
             get {
@@ -115,7 +115,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a At least one value is required in &apos;{0}&apos; group.
+        ///   Busca una cadena traducida similar a At least one value is required in {0} group.
         /// </summary>
         public static string AtLeastOneRequired {
             get {
@@ -124,7 +124,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Both of the types &apos;{0}&apos; and &apos;{1}&apos; convert to the other.
+        ///   Busca una cadena traducida similar a Both of the types {0} and {1} convert to the other.
         /// </summary>
         public static string BothTypesConvertToOther {
             get {
@@ -142,7 +142,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a A value of type &apos;{0}&apos; cannot be converted to type &apos;{1}&apos;.
+        ///   Busca una cadena traducida similar a A value of type {0} cannot be converted to type {1}.
         /// </summary>
         public static string CannotConvertValue {
             get {
@@ -156,6 +156,15 @@ namespace Brainary.Commons {
         public static string CannotIndexMultiDimArray {
             get {
                 return ResourceManager.GetString("CannotIndexMultiDimArray", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a The type {0} has multiple public constructors and cannot be initialized.
+        /// </summary>
+        public static string CannotInitializeMultiPublicCtors {
+            get {
+                return ResourceManager.GetString("CannotInitializeMultiPublicCtors", resourceCulture);
             }
         }
         
@@ -196,7 +205,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ConnectionString &apos;{0}&apos; was not found.
+        ///   Busca una cadena traducida similar a ConnectionString {0} was not found.
         /// </summary>
         public static string ConnectionStringNotFound {
             get {
@@ -232,7 +241,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a The identifier &apos;{0}&apos; was defined more than once.
+        ///   Busca una cadena traducida similar a The identifier {0} was defined more than once.
         /// </summary>
         public static string DuplicateIdentifier {
             get {
@@ -268,7 +277,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Expression of type &apos;{0}&apos; expected.
+        ///   Busca una cadena traducida similar a Expression of type {0} expected.
         /// </summary>
         public static string ExpressionTypeMismatch {
             get {
@@ -304,7 +313,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Operator &apos;{0}&apos; incompatible with operand type &apos;{1}&apos;.
+        ///   Busca una cadena traducida similar a Operator {0} incompatible with operand type {1}.
         /// </summary>
         public static string IncompatibleOperand {
             get {
@@ -313,7 +322,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Operator &apos;{0}&apos; incompatible with operand types &apos;{1}&apos; and &apos;{2}&apos;.
+        ///   Busca una cadena traducida similar a Operator {0} incompatible with operand types {1} and {2}.
         /// </summary>
         public static string IncompatibleOperands {
             get {
@@ -331,7 +340,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Syntax error &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a Syntax error {0}.
         /// </summary>
         public static string InvalidCharacter {
             get {
@@ -349,7 +358,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Field &apos;{0}&apos; is invalid.
+        ///   Busca una cadena traducida similar a Field {0} is invalid.
         /// </summary>
         public static string InvalidField {
             get {
@@ -367,7 +376,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Invalid integer literal &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a Invalid integer literal {0}.
         /// </summary>
         public static string InvalidIntegerLiteral {
             get {
@@ -376,7 +385,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Invalid real literal &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a Invalid real literal {0}.
         /// </summary>
         public static string InvalidRealLiteral {
             get {
@@ -385,7 +394,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Method &apos;{0}&apos; in type &apos;{1}&apos; does not return a value.
+        ///   Busca una cadena traducida similar a Method {0} in type {1} does not return a value.
         /// </summary>
         public static string MethodIsVoid {
             get {
@@ -394,7 +403,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Methods on type &apos;{0}&apos; are not accessible.
+        ///   Busca una cadena traducida similar a Methods on type {0} are not accessible.
         /// </summary>
         public static string MethodsAreInaccessible {
             get {
@@ -466,7 +475,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Neither of the types &apos;{0}&apos; and &apos;{1}&apos; converts to the other.
+        ///   Busca una cadena traducida similar a Neither of the types {0} and {1} converts to the other.
         /// </summary>
         public static string NeitherTypeConvertsToOther {
             get {
@@ -475,7 +484,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No applicable aggregate method &apos;{0}&apos; exists.
+        ///   Busca una cadena traducida similar a No applicable aggregate method {0} exists.
         /// </summary>
         public static string NoApplicableAggregate {
             get {
@@ -484,7 +493,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No applicable indexer exists in type &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a No applicable indexer exists in type {0}.
         /// </summary>
         public static string NoApplicableIndexer {
             get {
@@ -493,7 +502,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No applicable method &apos;{0}&apos; exists in type &apos;{1}&apos;.
+        ///   Busca una cadena traducida similar a No applicable method {0} exists in type {1}.
         /// </summary>
         public static string NoApplicableMethod {
             get {
@@ -511,7 +520,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No matching constructor in type &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a No matching constructor in type {0}.
         /// </summary>
         public static string NoMatchingConstructor {
             get {
@@ -601,7 +610,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Type &apos;{0}&apos; has no nullable form.
+        ///   Busca una cadena traducida similar a Type {0} has no nullable form.
         /// </summary>
         public static string TypeHasNoNullableForm {
             get {
@@ -610,7 +619,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Unknown identifier &apos;{0}&apos;.
+        ///   Busca una cadena traducida similar a Unknown identifier {0}.
         /// </summary>
         public static string UnknownIdentifier {
             get {
@@ -619,7 +628,7 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a No property or field &apos;{0}&apos; exists in type &apos;{1}&apos;.
+        ///   Busca una cadena traducida similar a No property or field {0} exists in type {1}.
         /// </summary>
         public static string UnknownPropertyOrField {
             get {

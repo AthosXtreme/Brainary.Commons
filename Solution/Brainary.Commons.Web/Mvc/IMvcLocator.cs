@@ -3,15 +3,10 @@
     using System.Web.Mvc;
 
     /// <summary>
-    /// Extends <see cref="Commons.ILocator"/> interface for MVC implementations
+    /// Extends <see cref="ILocator"/> interface for MVC implementations
     /// </summary>
-    public interface IMvcLocator : Commons.ILocator
+    public interface IMvcLocator : ILocator
     {
-        /// <summary>
-        /// Register MVC components
-        /// </summary>
-        void RegisterMvcComponents();
-
         /// <summary>
         /// Return filter provider
         /// </summary>

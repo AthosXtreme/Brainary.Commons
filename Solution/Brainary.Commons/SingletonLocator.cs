@@ -39,6 +39,15 @@
         }
 
         /// <summary>
+        /// Component registration
+        /// </summary>
+        public virtual void RegisterComponents()
+        {
+            AssertInitialize();
+            locatorInstance.RegisterComponents();
+        }
+
+        /// <summary>
         /// Obtain a default typed object instance
         /// </summary>
         /// <typeparam name="TU">Type expected</typeparam>

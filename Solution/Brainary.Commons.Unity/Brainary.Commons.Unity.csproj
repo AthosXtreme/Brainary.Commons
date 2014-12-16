@@ -109,6 +109,8 @@
     <Compile Include="Aspects\ExceptionLogAttribute.cs" />
     <Compile Include="Aspects\ExceptionLogInterceptor.cs" />
     <Compile Include="Aspects\IExceptionLogInterceptor.cs" />
+    <Compile Include="UnityHttpModule.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Interceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

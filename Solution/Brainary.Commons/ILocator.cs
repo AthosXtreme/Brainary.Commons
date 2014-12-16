@@ -8,6 +8,11 @@
     public interface ILocator : IDisposable
     {
         /// <summary>
+        /// Component registration
+        /// </summary>
+        void RegisterComponents();
+
+        /// <summary>
         /// Obtain a default typed object instance
         /// </summary>
         /// <typeparam name="T">Type expected</typeparam>

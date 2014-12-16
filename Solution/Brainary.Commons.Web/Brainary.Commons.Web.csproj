@@ -75,13 +75,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PageHandlerFactory.cs" />
     <Compile Include="Mvc\AuthorizeEnabledAttribute.cs" />
     <Compile Include="Mvc\CacheControlAttribute.cs" />
     <Compile Include="Mvc\EntityModelBinder.cs" />
     <Compile Include="Mvc\HandleUnauthorizedAttribute.cs" />
     <Compile Include="Extensions\Extensions.cs" />
-    <Compile Include="ILocator.cs" />
-    <Compile Include="Locator.cs" />
     <Compile Include="Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -98,8 +97,6 @@
     <Compile Include="Mvc\Validation\Attributes\DateLessThanAttribute.cs" />
     <Compile Include="Mvc\Validation\Attributes\RutAttribute.cs" />
     <Compile Include="Mvc\Validation\JsonValidateAttribute.cs" />
-    <Compile Include="Wcf\IWcfLocator.cs" />
-    <Compile Include="Wcf\WcfLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Brainary.Commons\Brainary.Commons.csproj">
