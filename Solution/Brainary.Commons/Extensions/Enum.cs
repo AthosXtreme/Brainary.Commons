@@ -2,6 +2,7 @@
 {
     using System;
     using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
 
     public static partial class Extensions
     {
@@ -15,6 +16,18 @@
             var field = value.GetType().GetField(value.ToString());
             var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
             return attribute == null ? value.ToString("G") : attribute.Description;
+        }
+
+        /// <summary>
+        /// Obtain display name attribute from enum value
+        /// </summary>
+        /// <param name="value">Enum value</param>
+        /// <returns>Description string</returns>
+        public static string GetDisplayName(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute;
+            return attribute == null ? value.ToString("G") : attribute.Name;
         }
 
         /// <summary>
