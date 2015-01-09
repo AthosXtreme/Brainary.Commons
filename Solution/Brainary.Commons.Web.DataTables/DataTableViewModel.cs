@@ -1,4 +1,4 @@
-﻿namespace Brainary.Commons.Web.Datatables
+﻿namespace Brainary.Commons.Web.DataTables
 {
     using System;
     using System.Collections.Generic;
@@ -11,15 +11,17 @@
 
     using Brainary.Commons.Extensions;
 
-    public class DataTableVm
+    public class DataTableViewModel
     {
+        public const string DefaultDomTemplate = "{0}{1}{2}rtip";
+        public const string BootstrapDomTemplate = "{0}<'row'<'col-xs-6'{1}><'col-xs-6'{2}>><'row'<'col-sm-12'tr>><'row'<'col-xs-6'i><'col-xs-6'p>>";
         public const string ControlBoxTemplateJqueryUI = "<a href=\"#{editTarget}" + CbDataToken + "\" name=\"editRow\" class=\"ui-state-default ui-corner-all\" title=\"Editar\"><span class=\"ui-icon ui-icon-pencil\"></span></a>&nbsp;&nbsp;<a href=\"#{deleteTarget}" + CbDataToken + "\" name=\"deleteRow\" class=\"ui-state-default ui-corner-all\" title=\"Eliminar\"><span class=\"ui-icon ui-icon-minus\"></span></a>";
         public const string ControlBoxTemplateBootstrap = "<a href=\"#{editTarget}" + CbDataToken + "\" name=\"editRow\" class=\"btn btn-default btn-xs\" title=\"Editar\"><span class=\"glyphicon glyphicon-pencil\"></span></a>&nbsp;&nbsp;<a href=\"#{deleteTarget}" + CbDataToken + "\" name=\"deleteRow\" class=\"btn btn-default btn-xs\" title=\"Eliminar\"><span class=\"glyphicon glyphicon-remove\"></span></a>";
         public const string CbDataToken = "_DATA_";
 
         private static readonly List<Type> DateTypes;
 
-        static DataTableVm()
+        static DataTableViewModel()
         {
             DateTypes = new List<Type> { typeof(DateTime), typeof(DateTime?), typeof(DateTimeOffset), typeof(DateTimeOffset?) };
             DefaultTableClass = "table table-bordered table-striped";
@@ -32,15 +34,15 @@
             };
         }
 
-        public DataTableVm(string id, string ajaxUrl, DataTable initialData)
+        public DataTableViewModel(string id, string ajaxUrl, DataTable initialData)
         {
-            InitialData = initialData.Rows.Cast<DataRow>().Select(r => initialData.Columns.Cast<DataColumn>().Select(c => DataTablesResult.GetTransformedValue(c.DataType, r[c])).ToArray()).ToArray();
+            InitialData = initialData.Rows.Cast<DataRow>().Select(r => initialData.Columns.Cast<DataColumn>().Select(c => DataTablesParser.GetTransformedValue(c.DataType, r[c])).ToArray()).ToArray();
             DisplayLength = InitialData.Count();
             var columns = initialData.Columns.Cast<DataColumn>().Select(c => ColDef.Create(c.ColumnName, null, typeof(string))).ToList();
             Init(id, ajaxUrl, columns);
         }
 
-        public DataTableVm(string id, string ajaxUrl, IList<ColDef> columns)
+        public DataTableViewModel(string id, string ajaxUrl, IList<ColDef> columns)
         {
             DisplayLength = 10;
             Init(id, ajaxUrl, columns);
@@ -90,7 +92,7 @@
 
         public int[] DeferLoading { get; set; }
         
-        public object[][] InitialData { get; set; }
+        public object[][] InitialData { get; internal set; }
 
         public FilterRuleList FilterTypeRules { get; set; }
 
@@ -135,21 +137,20 @@
             get { return string.Join(",", Columns.Select((v, i) => new { Index = i, Value = v }).Where(w => !w.Value.Hidden && !w.Value.Sortable).Select(s => s.Index)); }
         }
 
-        public string Dom
-        {
-            get
-            {
-                var sdom = string.Empty;
-                if (TableTools) sdom += "T<\"clear\">";
-                if (ShowPageSizes) sdom += "l";
-                if (ShowSearch) sdom += "f";
-                sdom += "tipr";
+        public bool ShowPageSizes { get; set; }
 
-                return sdom;
-            }
+        public string RenderDom()
+        {
+            return RenderDom(DefaultDomTemplate);
         }
 
-        public bool ShowPageSizes { get; set; }
+        public string RenderDom(string template)
+        {
+            var tt = TableTools ? "T<\"clear\">" : string.Empty;
+            var ps = ShowPageSizes ? "l" : string.Empty;
+            var ss = ShowSearch ? "f" : string.Empty;
+            return string.Format(template, tt, ps, ss);
+        }
 
         public string RenderControlBox()
         {
@@ -201,6 +202,12 @@
                     }).ToArray();
         }
 
+        public void SetInitialData<T>(IEnumerable<T> data)
+        {
+            var properties = typeof(T).GetSortedProperties();
+            InitialData = data.Select(i => properties.Select(p => DataTablesParser.GetTransformedValue(p.PropertyType, p.GetGetMethod().Invoke(i, null))).ToArray()).ToArray();
+        }
+
         public string GetFilterType(string columnName, Type type)
         {
             foreach (var rule in FilterTypeRules.Select(filterTypeRule => filterTypeRule(columnName, type)).Where(rule => rule != null))
@@ -209,36 +216,36 @@
             return "null";
         }
 
-        public Filter<DataTableVm> FilterOn<T>()
+        public Filter<DataTableViewModel> FilterOn<T>()
         {
             return FilterOn<T>(null);
         }
 
-        public Filter<DataTableVm> FilterOn<T>(object jsOptions)
+        public Filter<DataTableViewModel> FilterOn<T>(object jsOptions)
         {
             var optionsDict = ConvertObjectToDictionary(jsOptions);
             return FilterOn<T>(optionsDict);
         }
 
-        public Filter<DataTableVm> FilterOn<T>(IDictionary<string, object> jsOptions)
+        public Filter<DataTableViewModel> FilterOn<T>(IDictionary<string, object> jsOptions)
         {
-            return new Filter<DataTableVm>(this, FilterTypeRules, (c, t) => t == typeof(T), jsOptions);
+            return new Filter<DataTableViewModel>(this, FilterTypeRules, (c, t) => t == typeof(T), jsOptions);
         }
 
-        public Filter<DataTableVm> FilterOn(string columnName)
+        public Filter<DataTableViewModel> FilterOn(string columnName)
         {
             return FilterOn(columnName, null);
         }
 
-        public Filter<DataTableVm> FilterOn(string columnName, object jsOptions)
+        public Filter<DataTableViewModel> FilterOn(string columnName, object jsOptions)
         {
             var optionsDict = ConvertObjectToDictionary(jsOptions);
             return FilterOn(columnName, optionsDict);
         }
 
-        public Filter<DataTableVm> FilterOn(string columnName, IDictionary<string, object> jsOptions)
+        public Filter<DataTableViewModel> FilterOn(string columnName, IDictionary<string, object> jsOptions)
         {
-            return new Filter<DataTableVm>(this, FilterTypeRules, (c, t) => c == columnName, jsOptions);
+            return new Filter<DataTableViewModel>(this, FilterTypeRules, (c, t) => c == columnName, jsOptions);
         }
 
         private static string ConvertDictionaryToJsonBody(IDictionary<string, object> dict)
@@ -267,7 +274,7 @@
             TableTools = true;
             AutoWidth = true;
             ControlBoxDataToken = CbDataToken;
-            ControlBoxTemplate = ControlBoxTemplateJqueryUI;
+            ControlBoxTemplate = ControlBoxTemplateBootstrap;
             ControlBoxTokens = new Dictionary<string, string> { { "#{editTarget}", "~/" }, { "#{deleteTarget}", "~/" } };
             Sort = new[] { new object[] { 0, "asc" } };
             JsOptions = new Dictionary<string, object>();
@@ -350,9 +357,9 @@
     }
 
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
-    public class DataTableVm<T, TRes> : DataTableVm
+    public class DataTableViewModel<T, TRes> : DataTableViewModel
     {
-        public DataTableVm(string id, string ajaxUrl, IEnumerable<T> initialData, Func<T, TRes> transform, IList<ColDef> columns)
+        public DataTableViewModel(string id, string ajaxUrl, IEnumerable<T> initialData, Func<T, TRes> transform, IList<ColDef> columns)
             : base(id, ajaxUrl, columns)
         {
             InitialData = GetResults(initialData, transform);
@@ -363,7 +370,7 @@
         {
             var filteredData = data.Select(transform).AsQueryable();
             var properties = typeof(TRes).GetSortedProperties();
-            return filteredData.Select(i => properties.Select(p => DataTablesResult.GetTransformedValue(p.PropertyType, p.GetGetMethod().Invoke(i, null))).ToArray()).ToArray();
+            return filteredData.Select(i => properties.Select(p => DataTablesParser.GetTransformedValue(p.PropertyType, p.GetGetMethod().Invoke(i, null))).ToArray()).ToArray();
         }
     }
 }

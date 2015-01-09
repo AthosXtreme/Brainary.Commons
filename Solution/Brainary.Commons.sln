@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web", "Bra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Unity", "Brainary.Commons.Unity\Brainary.Commons.Unity.csproj", "{67C29579-99CC-4797-B55C-A34A71D667E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web.Datatables", "Brainary.Commons.Web.Datatables\Brainary.Commons.Web.Datatables.csproj", "{AC72872F-5C00-46EC-A2D7-E4D286A206A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web.DataTables", "Brainary.Commons.Web.DataTables\Brainary.Commons.Web.DataTables.csproj", "{AC72872F-5C00-46EC-A2D7-E4D286A206A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Data.MsSql", "Brainary.Commons.Data.MsSql\Brainary.Commons.Data.MsSql.csproj", "{0EA24D8E-F681-47E8-88F6-C3255B457F58}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.Log4Net", "Brainary.Commons.Logging.Log4Net\Brainary.Commons.Logging.Log4Net.csproj", "{9D573A0F-8B37-4A7D-95E5-8BD196D50834}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.NLog", "Brainary.Commons.Logging.NLog\Brainary.Commons.Logging.NLog.csproj", "{349EB99B-44F6-4935-9194-9DB07FA02A18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web.DataTables.Mvc", "Brainary.Commons.Web.DataTables.Mvc\Brainary.Commons.Web.DataTables.Mvc.csproj", "{057CB9CD-C858-4896-8CDD-A3E815222071}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,10 @@ Global
 		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{349EB99B-44F6-4935-9194-9DB07FA02A18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{057CB9CD-C858-4896-8CDD-A3E815222071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{057CB9CD-C858-4896-8CDD-A3E815222071}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{057CB9CD-C858-4896-8CDD-A3E815222071}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{057CB9CD-C858-4896-8CDD-A3E815222071}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

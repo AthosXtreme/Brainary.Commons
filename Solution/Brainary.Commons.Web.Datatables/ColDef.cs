@@ -1,4 +1,4 @@
-﻿namespace Brainary.Commons.Web.Datatables
+﻿namespace Brainary.Commons.Web.DataTables
 {
     using System;
 
