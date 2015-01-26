@@ -144,11 +144,17 @@
   <data name="ExceptionAt" xml:space="preserve">
     <value>Excepción en {0}.{1}</value>
   </data>
+  <data name="HTTPVerbNotAllowed" xml:space="preserve">
+    <value>La operación no admite el verbo de solicitud HTTP '{0}'</value>
+  </data>
   <data name="InitializeLocatorFirst" xml:space="preserve">
     <value>Locator no ha sido inicializado, debe llamar al método Initialize primero</value>
   </data>
   <data name="InvalidField" xml:space="preserve">
     <value>El campo {0} es inválido</value>
+  </data>
+  <data name="InvalidModel" xml:space="preserve">
+    <value>Se encontraron errores en el formulario</value>
   </data>
   <data name="MissingObjectInstance" xml:space="preserve">
     <value>Referencia a objeto no establecida como instancia de un objeto</value>

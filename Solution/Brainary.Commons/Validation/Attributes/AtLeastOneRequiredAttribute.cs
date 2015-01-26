@@ -16,6 +16,14 @@
 
         public string GroupName { get; private set; }
 
+        public override bool RequiresValidationContext
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public override string FormatErrorMessage(string name)
         {
             return string.Format(Messages.AtLeastOneRequired, name);

@@ -3,12 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Web;
 
     using Brainary.Commons.Extensions;
 
-    public static class DataTablesParser
+    public class DataTablesParser
     {
         static DataTablesParser()
         {
@@ -67,14 +68,12 @@
             return result;
         }
 
-        public static DataTablesResponse GetResults<T, TRes>(IQueryable<T> data, RequestParameters param, Func<T, TRes> transform)
+        public static DataTablesResponse GetResults<T, TRes>(IEnumerable<T> data, RequestParameters param, Func<T, TRes> transform)
         {
-            var totalRecords = data.Count(); // annoying this, as it causes an extra evaluation..
-
+            var list = data.ToList();
+            var totalRecords = list.Count();
             var filters = new DataTablesFilter();
-
-            var filteredData = data.Select(transform).AsQueryable();
-
+            var filteredData = list.Select(transform).AsQueryable();
             var searchColumns = typeof(TRes).GetSortedProperties().Select(p => new ColInfo(p.Name, p.PropertyType)).ToArray();
 
             filteredData = filters.FilterPagingSortingSearch(param, filteredData, searchColumns).Cast<TRes>();
@@ -96,6 +95,42 @@
             };
 
             return result;
+        }
+    }
+    
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleClass", Justification = "Reviewed. Suppression is OK here.")]
+    public class DataTablesParser<T> : DataTablesParser
+    {
+        public static object[] ParseData(T data)
+        {
+            var foo = new List<T> { data };
+            return ParseData(foo.AsQueryable()).First();
+        }
+
+        public static object[][] ParseData(IEnumerable<T> data)
+        {
+            return DataTablesParser<T, T>.ParseData(data, t => t);
+        }
+    }
+
+    public class DataTablesParser<T, TRes> : DataTablesParser<TRes>
+    {
+        public static void RegisterFilter<TVal>(Func<TVal, object> filter)
+        {
+            PropertyTransformers.Add(Guard(filter));
+        }
+
+        public static object[] ParseData(T data, Func<T, TRes> transform)
+        {
+            var foo = new List<T> { data };
+            return ParseData(foo.AsQueryable(), transform).First();
+        }
+
+        public static object[][] ParseData(IEnumerable<T> data, Func<T, TRes> transform)
+        {
+            var filteredData = data.Select(transform);
+            var properties = typeof(TRes).GetSortedProperties();
+            return filteredData.Select(i => properties.Select(p => GetTransformedValue(p.PropertyType, p.GetGetMethod().Invoke(i, null))).ToArray()).ToArray();
         }
     }
 }

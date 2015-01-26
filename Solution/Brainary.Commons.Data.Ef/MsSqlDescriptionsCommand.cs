@@ -2,7 +2,7 @@
 {
     public class MsSqlDescriptionsCommand : DescriptionsCommand
     {
-        private const string ScriptFilePath = @"..\..\..\..\Scripts\descriptions_script.sql";
+        private const string ScriptFilePath = @"..\..\..\..\Snippets\descriptions_script.sql";
 
         private const string ColDescTempl =
             "IF NOT EXISTS (SELECT NULL FROM SYS.EXTENDED_PROPERTIES WHERE [major_id] = OBJECT_ID('{0}') AND [name] = N'MS_Description' AND [minor_id] = (SELECT [column_id] FROM SYS.COLUMNS WHERE [name] = '{1}' AND [object_id] = OBJECT_ID('{0}')))\r\n"

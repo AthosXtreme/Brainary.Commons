@@ -13,7 +13,15 @@
 
         public bool AllowEqual { get; set; }
 
-        protected string PropertyName { get; private set; }
+        public string PropertyName { get; private set; }
+
+        public override bool RequiresValidationContext
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public override string FormatErrorMessage(string name)
         {

@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Logging.NL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web.DataTables.Mvc", "Brainary.Commons.Web.DataTables.Mvc\Brainary.Commons.Web.DataTables.Mvc.csproj", "{057CB9CD-C858-4896-8CDD-A3E815222071}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Brainary.Commons.Web.Mvc", "Brainary.Commons.Web.Mvc\Brainary.Commons.Web.Mvc.csproj", "{37951B9A-3357-4C09-ADE9-C98C50CC547D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,12 +82,16 @@ Global
 		{057CB9CD-C858-4896-8CDD-A3E815222071}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{057CB9CD-C858-4896-8CDD-A3E815222071}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{057CB9CD-C858-4896-8CDD-A3E815222071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37951B9A-3357-4C09-ADE9-C98C50CC547D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37951B9A-3357-4C09-ADE9-C98C50CC547D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37951B9A-3357-4C09-ADE9-C98C50CC547D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37951B9A-3357-4C09-ADE9-C98C50CC547D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = ..\Packages\Unity.2.1.505.2\lib\NET35;..\Packages\Unity.Interception.2.1.505.2\lib\NET35;..\Packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;EnterpriseLibrary.Data.6.0.1304.0\lib\NET45;EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45
+		EnterpriseLibraryConfigurationToolBinariesPath = ..\Packages\Unity.2.1.505.2\lib\NET35;..\Packages\Unity.Interception.2.1.505.2\lib\NET35;..\Packages\EnterpriseLibrary.Common.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Data.5.0.505.0\lib\NET35;..\Packages\EnterpriseLibrary.Logging.5.0.505.1\lib\NET35
 	EndGlobalSection
 EndGlobal

@@ -195,6 +195,9 @@
   <data name="FirstExprMustBeBool" xml:space="preserve">
     <value>The first expression must be of type 'Boolean'</value>
   </data>
+  <data name="HTTPVerbNotAllowed" xml:space="preserve">
+    <value>The operation does not allow request HTTP verb '{0}'</value>
+  </data>
   <data name="IdentifierExpected" xml:space="preserve">
     <value>Identifier expected</value>
   </data>
@@ -224,6 +227,9 @@
   </data>
   <data name="InvalidIntegerLiteral" xml:space="preserve">
     <value>Invalid integer literal {0}</value>
+  </data>
+  <data name="InvalidModel" xml:space="preserve">
+    <value>Form errors encountered</value>
   </data>
   <data name="InvalidRealLiteral" xml:space="preserve">
     <value>Invalid real literal {0}</value>

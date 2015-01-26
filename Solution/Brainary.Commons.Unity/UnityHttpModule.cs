@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using System.Web;
+    using System.Web.Routing;
     using System.Web.UI;
 
     using Microsoft.Practices.Unity;
@@ -60,7 +62,8 @@
         public void Init(HttpApplication context)
         {
             context.BeginRequest += ContextOnBeginRequest;
-            context.PreRequestHandlerExecute += OnPreRequestHandlerExecute;
+            context.PostResolveRequestCache += ContextOnPostResolveRequestCache;
+            context.PreRequestHandlerExecute += ContextPreRequestHandlerExecute;
             context.EndRequest += ContextOnEndRequest;
         }
 
@@ -96,6 +99,33 @@
             }
         }
 
+        private static ConstructorInfo GetInjectableCtor(Type type)
+        {
+            var overloadedPublicConstructors = (
+                from constructor in type.GetConstructors()
+                where constructor.GetParameters().Length > 0
+                select constructor).ToArray();
+
+            if (overloadedPublicConstructors.Length == 0)
+                return null;
+
+            if (overloadedPublicConstructors.Length == 1)
+                return overloadedPublicConstructors[0];
+
+            throw new Exception(string.Format(Messages.CannotInitializeMultiPublicCtors, type));
+        }
+
+        private void InjectDependencies(object obj, ConstructorInfo ctor)
+        {
+            var arguments = GetResolvedArguments(ctor);
+            ctor.Invoke(obj, arguments);
+        }
+
+        private object[] GetResolvedArguments(ConstructorInfo ctor)
+        {
+            return (from parameter in ctor.GetParameters() select ChildContainer.Resolve(parameter.ParameterType)).ToArray();
+        }
+
         #endregion
 
         #region Life-cycle event handlers
@@ -111,12 +141,36 @@
         }
 
         /// <summary>
+        /// Performs constructor dependency injection by replacing http handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventArgs"></param>
+        private void ContextOnPostResolveRequestCache(object sender, EventArgs eventArgs)
+        {
+            var context = (HttpContextBase)new HttpContextWrapper(((HttpApplication)sender).Context);
+            var routeData = RouteTable.Routes.GetRouteData(context);
+            if (routeData == null) return;
+            var routeHandler = routeData.RouteHandler;
+            if (routeHandler == null) throw new InvalidOperationException("Route Handler not found");
+            if (routeHandler is StopRoutingHandler) return;
+            var requestContext = new RequestContext(context, routeData);
+            context.Request.RequestContext = requestContext;
+            var httpHandler = routeHandler.GetHttpHandler(requestContext) as Page;
+            if (httpHandler == null) throw new InvalidOperationException("Page Handler not found");
+
+            var ctor = GetInjectableCtor(httpHandler.GetType().BaseType);
+            if (ctor != null) InjectDependencies(httpHandler, ctor);
+
+            context.RemapHandler(httpHandler);
+        }
+
+        /// <summary>
         /// Registers the injection event to fire when the page has been
         /// initialized.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnPreRequestHandlerExecute(object sender, EventArgs e)
+        private void ContextPreRequestHandlerExecute(object sender, EventArgs e)
         {
             // static content; no need for a container 
             if (HttpContext.Current.Handler == null) return;

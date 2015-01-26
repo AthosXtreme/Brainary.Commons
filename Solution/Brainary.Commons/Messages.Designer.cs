@@ -295,6 +295,15 @@ namespace Brainary.Commons {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a The operation does not allow request HTTP verb &apos;{0}&apos;.
+        /// </summary>
+        public static string HTTPVerbNotAllowed {
+            get {
+                return ResourceManager.GetString("HTTPVerbNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Identifier expected.
         /// </summary>
         public static string IdentifierExpected {
@@ -381,6 +390,15 @@ namespace Brainary.Commons {
         public static string InvalidIntegerLiteral {
             get {
                 return ResourceManager.GetString("InvalidIntegerLiteral", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Form errors encountered.
+        /// </summary>
+        public static string InvalidModel {
+            get {
+                return ResourceManager.GetString("InvalidModel", resourceCulture);
             }
         }
         

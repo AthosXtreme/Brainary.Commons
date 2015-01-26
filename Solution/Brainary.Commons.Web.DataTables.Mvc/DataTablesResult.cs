@@ -8,8 +8,6 @@
     using System.Linq;
     using System.Web.Mvc;
 
-    using Brainary.Commons.Extensions;
-
     public class DataTablesResult : JsonResult
     {
         public static DataTablesResult<TRes> Create<T, TRes>(IQueryable<T> q, RequestParameters dataTableParam, Func<T, TRes> transform, int? totalRecords = null, int? totalDisplay = null)
@@ -49,21 +47,11 @@
     // ReSharper disable once UnusedTypeParameter
     public class DataTablesResult<T> : DataTablesResult
     {
-        public static object[] ParseData(T data)
-        {
-            var foo = new List<T> { data };
-            return ParseData(foo.AsQueryable()).First();
-        }
-
-        public static object[][] ParseData(IQueryable<T> data)
-        {
-            return DataTablesResult<T, T>.ParseData(data, t => t);
-        }
     }
 
     public class DataTablesResult<T, TRes> : DataTablesResult<TRes>
     {
-        public DataTablesResult(IQueryable<T> q, RequestParameters dataTableParam, Func<T, TRes> transform, int? totalRecords = null, int? totalDisplay = null)
+        public DataTablesResult(IEnumerable<T> q, RequestParameters dataTableParam, Func<T, TRes> transform, int? totalRecords = null, int? totalDisplay = null)
         {
             var content = DataTablesParser.GetResults(q, dataTableParam, transform);
             if (totalRecords.HasValue) content.recordsTotal = totalRecords.Value;
@@ -78,24 +66,6 @@
             var content = DataTablesParser.GetResultsDynamic(dt, totalRecords, totalDisplay, dataTableParam);
             Data = content;
             JsonRequestBehavior = JsonRequestBehavior.DenyGet;
-        }
-
-        public static void RegisterFilter<TVal>(Func<TVal, object> filter)
-        {
-            DataTablesParser.PropertyTransformers.Add(DataTablesParser.Guard(filter));
-        }
-
-        public static object[] ParseData(T data, Func<T, TRes> transform)
-        {
-            var foo = new List<T> { data };
-            return ParseData(foo.AsQueryable(), transform).First();
-        }
-
-        public static object[][] ParseData(IQueryable<T> data, Func<T, TRes> transform)
-        {
-            var filteredData = data.Select(transform).AsQueryable();
-            var properties = typeof(TRes).GetSortedProperties();
-            return filteredData.Select(i => properties.Select(p => DataTablesParser.GetTransformedValue(p.PropertyType, p.GetGetMethod().Invoke(i, null))).ToArray()).ToArray();
         }
     }
 }

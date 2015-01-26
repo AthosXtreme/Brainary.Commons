@@ -1,4 +1,4 @@
-﻿namespace Brainary.Commons.Web.Extensions
+﻿namespace Brainary.Commons.Web.Mvc.Extensions
 {
     using System;
     using System.IO;
