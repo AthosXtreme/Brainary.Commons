@@ -79,7 +79,6 @@ namespace Brainary.Commons.Data.Patterns.Specification
         /// </summary>
         /// <param name="specification">Specification instance</param>
         /// <returns>See True operator in C#</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "specification")]
         public static bool operator true(Specification<TEntity> specification)
         {
             return false;

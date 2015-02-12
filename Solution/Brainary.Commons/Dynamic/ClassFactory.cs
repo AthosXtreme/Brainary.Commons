@@ -3,13 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Reflection.Emit;
     using System.Threading;
 
-    public class ClassFactory : Singleton<ClassFactory>
+    public class ClassFactory
     {
         #region Fields
+
+        private static readonly Lazy<ClassFactory> LazyInstance = new Lazy<ClassFactory>(() => new ClassFactory());
 
         private readonly Dictionary<Signature, Type> classes;
 
@@ -23,10 +26,12 @@
 
         #region "Singleton Implementation"
         // Deny constructor
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", Justification = "Reviewed. Suppression is OK here.")]
         private ClassFactory()
         {
             var name = new AssemblyName("DynamicClasses");
-            AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+
 #if ENABLE_LINQ_PARTIAL_TRUST
             new ReflectionPermission(PermissionState.Unrestricted).Assert();
 #endif
@@ -52,12 +57,7 @@
         {
             get
             {
-                if (!Initialised)
-                {
-                    Init(new ClassFactory());
-                }
-
-                return UniqueInstance;
+                return LazyInstance.Value;
             }
         }
 
@@ -86,10 +86,7 @@
             }
         }
 
-        public Type GetDynamicClass(
-            IEnumerable<DynamicProperty> properties, 
-            Type resultType = null, 
-            Type baseType = null)
+        public Type GetDynamicClass(IEnumerable<DynamicProperty> properties, Type resultType = null, Type baseType = null)
         {
             rwrLock.AcquireReaderLock(Timeout.Infinite);
             try
@@ -121,7 +118,7 @@
             MethodBuilder mb = tb.DefineMethod(
                 "Equals",
                 MethodAttributes.Public | MethodAttributes.ReuseSlot | MethodAttributes.Virtual | MethodAttributes.HideBySig,
-                typeof(bool), 
+                typeof(bool),
                 new[] { typeof(object) });
             ILGenerator gen = mb.GetILGenerator();
             LocalBuilder other = gen.DeclareLocal(tb);
@@ -158,17 +155,13 @@
 
         private static void GenerateGetHashCode(TypeBuilder tb, IEnumerable<FieldInfo> fields)
         {
-            MethodBuilder mb = tb.DefineMethod(
-                "GetHashCode", 
-                MethodAttributes.Public | MethodAttributes.ReuseSlot | MethodAttributes.Virtual | MethodAttributes.HideBySig, 
-                typeof(int), 
-                Type.EmptyTypes);
-            ILGenerator gen = mb.GetILGenerator();
+            var mb = tb.DefineMethod("GetHashCode", MethodAttributes.Public | MethodAttributes.ReuseSlot | MethodAttributes.Virtual | MethodAttributes.HideBySig, typeof(int), Type.EmptyTypes);
+            var gen = mb.GetILGenerator();
             gen.Emit(OpCodes.Ldc_I4_0);
-            foreach (FieldInfo field in fields)
+            foreach (var field in fields)
             {
-                Type ft = field.FieldType;
-                Type ct = typeof(EqualityComparer<>).MakeGenericType(ft);
+                var ft = field.FieldType;
+                var ct = typeof(EqualityComparer<>).MakeGenericType(ft);
                 gen.EmitCall(OpCodes.Call, ct.GetMethod("get_Default"), null);
                 gen.Emit(OpCodes.Ldarg_0);
                 gen.Emit(OpCodes.Ldfld, field);
@@ -179,48 +172,31 @@
             gen.Emit(OpCodes.Ret);
         }
 
-        private static FieldInfo[] GenerateProperties(
-            TypeBuilder tb, 
-            DynamicProperty[] properties, 
-            Type returnType = null)
+        private static FieldInfo[] GenerateProperties(TypeBuilder tb, DynamicProperty[] properties, Type returnType = null)
         {
-            var fields = new FieldBuilder[properties.Length];
-            for (int i = 0; i < properties.Length; i++)
+            var fields = new FieldInfo[properties.Length];
+            for (var i = 0; i < properties.Length; i++)
             {
-                DynamicProperty dp = properties[i];
+                var dp = properties[i];
                 PrintPropertyInfo(dp);
-                FieldBuilder fb = tb.DefineField("_" + dp.Name, dp.Type, FieldAttributes.Private);
-                PropertyBuilder pb = tb.DefineProperty(dp.Name, PropertyAttributes.HasDefault, dp.Type, null);
-                if (dp.CustomAttributeBuilder != null)
-                {
-                    pb.SetCustomAttribute(dp.CustomAttributeBuilder);
-                }
+                var fb = tb.DefineField("_" + dp.Name, dp.Type, FieldAttributes.Private);
+                var pb = tb.DefineProperty(dp.Name, PropertyAttributes.HasDefault, dp.Type, null);
+                if (dp.CustomAttributeBuilder != null) pb.SetCustomAttribute(dp.CustomAttributeBuilder);
 
-                MethodBuilder mbuGet = tb.DefineMethod(
-                    "get_" + dp.Name, 
-                    MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual, 
-                    dp.Type, 
-                    Type.EmptyTypes);
-                ILGenerator genGet = mbuGet.GetILGenerator();
+                var mbuGet = tb.DefineMethod("get_" + dp.Name, MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual, dp.Type, Type.EmptyTypes);
+                var genGet = mbuGet.GetILGenerator();
                 genGet.Emit(OpCodes.Ldarg_0);
                 genGet.Emit(OpCodes.Ldfld, fb);
                 genGet.Emit(OpCodes.Ret);
 
                 if (returnType != null)
                 {
-                    MethodInfo returnTypeMi = returnType.GetMethod(mbuGet.Name);
-                    if (returnTypeMi != null)
-                    {
-                        tb.DefineMethodOverride(mbuGet, returnTypeMi);
-                    }
+                    var returnTypeMi = returnType.GetMethod(mbuGet.Name);
+                    if (returnTypeMi != null) tb.DefineMethodOverride(mbuGet, returnTypeMi);
                 }
 
-                MethodBuilder mbuSet = tb.DefineMethod(
-                    "set_" + dp.Name, 
-                    MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual, 
-                    null, 
-                    new[] { dp.Type });
-                ILGenerator genSet = mbuSet.GetILGenerator();
+                var mbuSet = tb.DefineMethod("set_" + dp.Name, MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual, null, new[] { dp.Type });
+                var genSet = mbuSet.GetILGenerator();
                 genSet.Emit(OpCodes.Ldarg_0);
                 genSet.Emit(OpCodes.Ldarg_1);
                 genSet.Emit(OpCodes.Stfld, fb);
@@ -228,7 +204,7 @@
 
                 if (returnType != null)
                 {
-                    MethodInfo returnTypeMi = returnType.GetMethod(mbuSet.Name);
+                    var returnTypeMi = returnType.GetMethod(mbuSet.Name);
 
                     if (returnTypeMi != null)
                     {
@@ -251,26 +227,27 @@
             Debug.WriteLine("Building Property {0} of Type {1}", dp.Name, dp.Type.Name);
         }
 
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", Justification = "Reviewed. Suppression is OK here.")]
         private Type CreateDynamicClass(DynamicProperty[] properties)
         {
-            LockCookie cookie = rwrLock.UpgradeToWriterLock(Timeout.Infinite);
+            var cookie = rwrLock.UpgradeToWriterLock(Timeout.Infinite);
             try
             {
-                string typeName = "DynamicClass" + (classCount + 1);
+                var typeName = "DynamicClass" + (classCount + 1);
 #if ENABLE_LINQ_PARTIAL_TRUST
                 new ReflectionPermission(PermissionState.Unrestricted).Assert();
 #endif
                 try
                 {
-                    TypeBuilder tb = module.DefineType(
-                        typeName, 
-                        TypeAttributes.Class | TypeAttributes.Public, 
+                    var tb = module.DefineType(
+                        typeName,
+                        TypeAttributes.Class | TypeAttributes.Public,
                         typeof(object));
 
-                    FieldInfo[] fields = GenerateProperties(tb, properties);
+                    var fields = GenerateProperties(tb, properties);
                     GenerateEquals(tb, fields);
                     GenerateGetHashCode(tb, fields);
-                    Type result = tb.CreateType();
+                    var result = tb.CreateType();
                     return result;
                 }
                 finally
@@ -287,9 +264,10 @@
             }
         }
 
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", Justification = "Reviewed. Suppression is OK here.")]
         private Type CreateDynamicClass(DynamicProperty[] properties, Type resultType, Type baseType = null)
         {
-            LockCookie cookie = rwrLock.UpgradeToWriterLock(Timeout.Infinite);
+            var cookie = rwrLock.UpgradeToWriterLock(Timeout.Infinite);
             try
             {
                 string typeName = "DynamicClass" + (classCount + 1);
@@ -298,15 +276,15 @@
 #endif
                 try
                 {
-                    TypeBuilder tb = module.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public, baseType ?? typeof(object));
+                    var tb = module.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Public, baseType ?? typeof(object));
 
                     tb.AddInterfaceImplementation(resultType);
-                    FieldInfo[] fields = GenerateProperties(tb, properties, resultType);
+                    var fields = GenerateProperties(tb, properties, resultType);
 
                     GenerateEquals(tb, fields);
                     GenerateGetHashCode(tb, fields);
 
-                    Type result = tb.CreateType();
+                    var result = tb.CreateType();
                     return result;
                 }
                 finally

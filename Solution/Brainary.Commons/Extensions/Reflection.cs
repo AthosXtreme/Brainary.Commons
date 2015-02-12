@@ -133,6 +133,16 @@
         /// <summary>
         /// Obtain a name/value dictionary from public scalar properties of an object
         /// </summary>
+        /// <param name="type">Type</param>
+        /// <returns>Dictionary</returns>
+        public static object GetDefaultvalue(this Type type)
+        {
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
+        }
+
+        /// <summary>
+        /// Obtain a name/value dictionary from public scalar properties of an object
+        /// </summary>
         /// <param name="obj">Object</param>
         /// <returns>Dictionary</returns>
         public static IDictionary<string, object> PropertiesToDictionary(this object obj)

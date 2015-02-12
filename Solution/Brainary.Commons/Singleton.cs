@@ -28,8 +28,7 @@
 
         protected static void Init(T newInstance)
         {
-            if (newInstance == null) throw new ArgumentNullException();
-
+            if (newInstance == null) throw new ArgumentNullException("newInstance");
             instance = newInstance;
         }
 

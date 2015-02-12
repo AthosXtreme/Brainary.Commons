@@ -49,7 +49,6 @@
     <Compile Include="Annotations\DecimalPrecisionAttribute.cs" />
     <Compile Include="Domain\BusinessException.cs" />
     <Compile Include="Domain\ServiceError.cs" />
-    <Compile Include="SingletonLocator.cs" />
     <Compile Include="Data\EntityAlreadyExistsException.cs" />
     <Compile Include="Data\EntityDoesNotExistsException.cs" />
     <Compile Include="Locator.cs" />
