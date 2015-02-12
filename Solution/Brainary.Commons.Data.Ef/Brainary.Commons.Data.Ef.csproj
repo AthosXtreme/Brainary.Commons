@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Conventions\DateTime2Convention.cs" />
     <Compile Include="MsSqlDescriptionsCommand.cs" />
     <Compile Include="DescriptionsCommand.cs" />
     <Compile Include="Conventions\ForeignKeyConvention.cs" />
