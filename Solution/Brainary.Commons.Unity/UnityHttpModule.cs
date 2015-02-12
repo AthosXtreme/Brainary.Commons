@@ -10,7 +10,7 @@
 
     using Microsoft.Practices.Unity;
 
-    public class UnityHttpModule : IHttpModule
+    public abstract class UnityHttpModule : IHttpModule
     {
         #region Fields
 
@@ -23,6 +23,8 @@
         #endregion
 
         #region Properties
+
+        protected abstract UnityLocator UnityLocator { get; }
 
         /// <summary>
         /// Gets the parent container out of the application state.
@@ -138,6 +140,7 @@
         private void ContextOnBeginRequest(object sender, EventArgs e)
         {
             ChildContainer = ParentContainer.CreateChildContainer();
+            UnityLocator.Container = childContainer;
         }
 
         /// <summary>
