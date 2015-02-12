@@ -23,7 +23,7 @@
                 Guard<IEnumerable<decimal>>(s => s.ToArray()),
                 Guard<IEnumerable<bool>>(s => s.ToArray()),
                 Guard<IEnumerable<double>>(s => s.ToArray()),
-                Guard<IEnumerable<object>>(s => s.Select(o => GetTransformedValue(o.GetType(), o)).ToArray()),
+                Guard<IEnumerable<object>>(s => s.Select(o => !o.GetType().IsAnonymousType() ? GetTransformedValue(o.GetType(), o) : o).ToArray()),
                 Guard<DateTime>(s => s),
                 Guard<int>(s => s),
                 Guard<long>(s => s),
