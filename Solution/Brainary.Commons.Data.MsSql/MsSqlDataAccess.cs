@@ -13,6 +13,11 @@
     {
         private readonly Database database;
 
+        static MsSqlDataAccess()
+        {
+            DatabaseFactory.SetDatabaseProviderFactory(new DatabaseProviderFactory()); 
+        }
+
         public MsSqlDataAccess()
         {
             database = DatabaseFactory.CreateDatabase();
