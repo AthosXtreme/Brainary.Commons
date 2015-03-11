@@ -205,7 +205,7 @@
             if (Args[propFqn] == null || propertyType == Args[propFqn].GetType())
                 return Args[propFqn];
                 
-            return conv.ConvertFromInvariantString(Args[propFqn].ToString());
+            return conv.ConvertFrom(Args[propFqn]);
         }
 
         /// <summary>
