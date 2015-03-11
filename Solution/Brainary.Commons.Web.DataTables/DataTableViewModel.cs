@@ -146,7 +146,7 @@
 
         public string RenderDom(string template)
         {
-            var tt = TableTools ? "T<\"clear\">" : string.Empty;
+            var tt = TableTools ? "T<'clear'>" : string.Empty;
             var ps = ShowPageSizes ? "l" : string.Empty;
             var ss = ShowSearch ? "f" : string.Empty;
             return string.Format(template, tt, ps, ss);
