@@ -51,6 +51,7 @@
     <Compile Include="Domain\ServiceError.cs" />
     <Compile Include="Data\EntityAlreadyExistsException.cs" />
     <Compile Include="Data\EntityDoesNotExistsException.cs" />
+    <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Locator.cs" />
     <Compile Include="EventLogger.cs" />
     <Compile Include="ILogger.cs" />
