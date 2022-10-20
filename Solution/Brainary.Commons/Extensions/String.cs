@@ -1,10 +1,8 @@
-﻿namespace Brainary.Commons.Extensions
-{
-    using System;
-    using System.Linq;
-    using System.Security.Cryptography;
-    using System.Text;
+using System.Security.Cryptography;
+using System.Text;
 
+namespace Brainary.Commons.Extensions
+{
     public static partial class Extensions
     {
         /// <summary>
@@ -46,7 +44,7 @@
         public static string FormatRut(this string str)
         {
             var value = str.CleanRut();
-            return string.Format("{0}-{1}", int.Parse(value.Substring(0, value.Length - 1)).ToString("N0"), value.Last());
+            return string.Format("{0}-{1}", int.Parse(value[..^1]).ToString("N0"), value.Last());
         }
     }
 }

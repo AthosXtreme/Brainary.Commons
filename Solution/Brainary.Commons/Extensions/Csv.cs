@@ -1,10 +1,8 @@
-﻿namespace Brainary.Commons.Extensions
-{
-    using System.Collections.Generic;
-    using System.Data;
-    using System.Linq;
-    using System.Text;
+using System.Data;
+using System.Text;
 
+namespace Brainary.Commons.Extensions
+{
     public static partial class Extensions
     {
         /// <summary>
@@ -89,7 +87,7 @@
 
             var props = typeof(T).GetProperties();
             foreach (var stringFile in data.Select(i => props.Select(s => s.GetValue(i, null)).Aggregate((current, val) => string.Format("{0}{1}{2}", current, separator, val))))
-                textOutput.AppendLine(stringFile.ToString());
+                textOutput.AppendLine(stringFile?.ToString());
 
             return textOutput;
         }
@@ -100,7 +98,7 @@
 
             var stringFile = data.Rows.Cast<DataRow>().Select(s => s.ItemArray.Aggregate((current, val) => string.Format("{0}{1}{2}", current, separator, val)));
             foreach (var o in stringFile)
-                textOutput.AppendLine(o.ToString());
+                textOutput.AppendLine(o?.ToString());
 
             return textOutput;
         }

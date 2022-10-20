@@ -1,22 +1,27 @@
-﻿namespace Brainary.Commons.Domain
+using System.ComponentModel.DataAnnotations;
+
+namespace Brainary.Commons.Domain
 {
-    using System.ComponentModel.DataAnnotations;
+    /// <summary>
+    /// Basic abstraction for entities
+    /// </summary>
+    public abstract class Entity
+	{
+		public abstract object? GetId();
+	}
 
     /// <summary>
-    /// Basic entity interface with int Id
+    /// Typed implementation of <see cref="Entity"/>
     /// </summary>
-    public interface IEntity
-    {
-        int Id { get; set; }
-    }
+    public abstract class Entity<T> : Entity
+	{
+		[Key]
+		[Display(Order = 0)]
+		public T? Id { get; set; }
 
-
-    /// <summary>
-    /// Implementation of <see cref="IEntity"/>
-    /// </summary>
-    public abstract class Entity : IEntity
-    {
-        [Display(Order = 0)]
-        public int Id { get; set; }
-    }
+		public override object? GetId()
+		{
+			return Id;
+		}
+	} 
 }

@@ -1,13 +1,10 @@
-﻿namespace Brainary.Commons.Extensions
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
-    using System.Linq.Expressions;
-    using System.Reflection;
-    using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
+namespace Brainary.Commons.Extensions
+{
     public static partial class Extensions
     {
         /// <summary>
@@ -21,7 +18,7 @@
                 .Select(pi => new
                 {
                     pi,
-                    da = (DisplayAttribute)pi.GetCustomAttributes(typeof(DisplayAttribute), false).SingleOrDefault()
+                    da = (DisplayAttribute?)pi.GetCustomAttributes(typeof(DisplayAttribute), false).SingleOrDefault()
                 })
                 .Select(@t1 => new
                 {
@@ -39,7 +36,7 @@
         public static bool IsAnonymousType(this Type type)
         {
             var hasCompilerGeneratedAttribute = type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any();
-            var nameContainsAnonymousType = type.FullName.Contains("AnonymousType");
+            var nameContainsAnonymousType = (type.FullName ?? string.Empty).Contains("AnonymousType");
             var isAnonymousType = hasCompilerGeneratedAttribute && nameContainsAnonymousType;
             return isAnonymousType;
         }
@@ -84,13 +81,16 @@
         /// <returns>Method info</returns>
         public static MethodInfo MethodInfo(this Expression method)
         {
-            var lambda = method as LambdaExpression;
-            if (lambda == null) throw new ArgumentNullException("method");
-            MethodCallExpression methodExpr = null;
+            if (method is not LambdaExpression lambda)
+                throw new ArgumentNullException(nameof(method));
+
+            MethodCallExpression? methodExpr = null;
             if (lambda.Body.NodeType == ExpressionType.Call)
                 methodExpr = lambda.Body as MethodCallExpression;
 
-            if (methodExpr == null) throw new ArgumentNullException("method");
+            if (methodExpr == null)
+                throw new ArgumentNullException(nameof(method));
+
             return methodExpr.Method;
         }
 
@@ -135,7 +135,7 @@
         /// </summary>
         /// <param name="type">Type</param>
         /// <returns>Dictionary</returns>
-        public static object GetDefaultvalue(this Type type)
+        public static object? GetDefaultvalue(this Type type)
         {
             return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
@@ -145,7 +145,7 @@
         /// </summary>
         /// <param name="obj">Object</param>
         /// <returns>Dictionary</returns>
-        public static IDictionary<string, object> PropertiesToDictionary(this object obj)
+        public static IDictionary<string, object?> PropertiesToDictionary(this object obj)
         {
             return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(prop => prop.PropertyType.IsValueType).ToDictionary(k => k.Name, v => v.GetValue(obj, null));
         }
@@ -156,11 +156,13 @@
             switch (level)
             {
                 case AttributeTargets.Assembly:
-                    list.AddRange(info.DeclaringType.Assembly.GetCustomAttributes(typeof(T), false).Cast<T>());
+                    if (info.DeclaringType != null)
+                        list.AddRange(info.DeclaringType.Assembly.GetCustomAttributes(typeof(T), false).Cast<T>());
                     goto case AttributeTargets.Class;
                 case AttributeTargets.Class:
                 case AttributeTargets.Struct:
-                    list.AddRange(info.DeclaringType.GetCustomAttributes(typeof(T), false).Cast<T>());
+                    if (info.DeclaringType != null)
+                        list.AddRange(info.DeclaringType.GetCustomAttributes(typeof(T), false).Cast<T>());
                     goto case AttributeTargets.Field;
                 case AttributeTargets.Field:
                 case AttributeTargets.Method:

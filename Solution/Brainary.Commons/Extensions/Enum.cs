@@ -1,11 +1,8 @@
-﻿namespace Brainary.Commons.Extensions
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.ComponentModel.DataAnnotations;
-    using System.Linq;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
+namespace Brainary.Commons.Extensions
+{
     public static partial class Extensions
     {
         /// <summary>
@@ -16,7 +13,7 @@
         public static string GetDescription(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
+            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute : null;
             return attribute == null ? value.ToString("G") : attribute.Description;
         }
 
@@ -28,8 +25,8 @@
         public static string GetDisplayName(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute;
-            return attribute == null ? value.ToString("G") : attribute.Name;
+            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
+            return attribute == null ? value.ToString("G") : attribute?.Name ?? string.Empty;
         }
 
         /// <summary>
