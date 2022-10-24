@@ -75,6 +75,24 @@ namespace Brainary.Commons.Extensions
         }
 
         /// <summary>
+        /// Determine if type is subclass of raw generic type
+        /// </summary>
+        /// <param name="toCheck">Type</param>
+        /// <param name="generic">Raw generic type</param>
+        /// <returns></returns>
+        public static bool IsSubclassOfRawGeneric(this Type toCheck, Type generic)
+        {
+            Type? test = toCheck; 
+            while (test != null && test != typeof(object))
+            {
+                Type type = test.GetTypeInfo().IsGenericType ? test.GetGenericTypeDefinition() : test;
+                if (generic == type) return true;
+                test = test.GetTypeInfo().BaseType;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Get method info from expression
         /// </summary>
         /// <param name="method">Expression method</param>
