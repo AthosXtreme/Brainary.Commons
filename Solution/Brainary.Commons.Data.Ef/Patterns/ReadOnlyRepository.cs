@@ -29,7 +29,7 @@ namespace Brainary.Commons.Data.Patterns
 
         public virtual T? FindById(object id)
         {
-            return Context.Set<T>().FirstOrDefault(obj => obj.GetId() == id);
+            return Context.Set<T>().FirstOrDefault(obj => obj.Id == id);
         }
 
         public virtual T? FindOne(Expression<Func<T, bool>> func)

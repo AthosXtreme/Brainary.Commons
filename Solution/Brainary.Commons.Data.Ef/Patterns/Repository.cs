@@ -21,7 +21,7 @@ namespace Brainary.Commons.Data.Patterns
                 throw new EntityAlreadyExistsException();
 
             var set = Context.Set<T>();
-            T? attachedEntity = set.Find(instance.GetId());
+            T? attachedEntity = set.Find(instance.Id);
             if (attachedEntity != null)
                 throw new EntityAlreadyExistsException();
 
@@ -39,7 +39,7 @@ namespace Brainary.Commons.Data.Patterns
             if (entry.State == EntityState.Detached)
             {
                 var set = Context.Set<T>();
-                T? attachedEntity = set.Find(instance.GetId());
+                T? attachedEntity = set.Find(instance.Id);
                 if (attachedEntity == null)
                     throw new EntityDoesNotExistsException();
 
@@ -60,7 +60,7 @@ namespace Brainary.Commons.Data.Patterns
             if (entry.State == EntityState.Detached)
             {
                 var set = Context.Set<T>();
-                T? attachedEntity = set.Find(instance.GetId());
+                T? attachedEntity = set.Find(instance.Id);
                 if (attachedEntity == null)
                     throw new EntityDoesNotExistsException();
 

@@ -6,9 +6,11 @@ namespace Brainary.Commons.Domain
     /// Basic abstraction for entities
     /// </summary>
     public abstract class Entity
-	{
-		public abstract object? GetId();
-	}
+    {
+        protected object id = default!;
+
+        public object Id { get => id; set => id = value; }
+    }
 
     /// <summary>
     /// Typed implementation of <see cref="Entity"/>
@@ -17,11 +19,7 @@ namespace Brainary.Commons.Domain
 	{
 		[Key]
 		[Display(Order = 0)]
-		public T? Id { get; set; }
-
-		public override object? GetId()
-		{
-			return Id;
-		}
+		[MaxLength(16)] //used when text type
+		public new T Id { get => (T)id; set => id = value; }
 	} 
 }

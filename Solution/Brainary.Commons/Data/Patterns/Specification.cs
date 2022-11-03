@@ -5,7 +5,7 @@ namespace Brainary.Commons.Data.Patterns
     /// <summary>
     /// Represents a specification expression
     /// </summary>
-    public abstract class Specifcation<T> : ISpecification<T>
+    public abstract class Specification<T> : ISpecification<T>
     {
         public Expression<Func<T, bool>>? Criteria { get; }
 
@@ -26,11 +26,11 @@ namespace Brainary.Commons.Data.Patterns
         public bool IsPagingEnabled { get; private set; } = false;
 
 
-        public Specifcation()
+        public Specification()
         {
         }
 
-        public Specifcation(Expression<Func<T, bool>> criteria)
+        public Specification(Expression<Func<T, bool>> criteria)
         {
             Criteria = criteria;
         }
