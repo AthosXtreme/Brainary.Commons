@@ -35,16 +35,5 @@ namespace Brainary.Commons.Extensions
                 return builder.ToString();
             }
         }
-
-        public static string CleanRut(this string str)
-        {
-            return new string(str.Where(char.IsLetterOrDigit).ToArray());
-        }
-
-        public static string FormatRut(this string str)
-        {
-            var value = str.CleanRut();
-            return string.Format("{0}-{1}", int.Parse(value[..^1]).ToString("N0"), value.Last());
-        }
     }
 }

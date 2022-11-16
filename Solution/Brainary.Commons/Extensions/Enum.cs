@@ -30,12 +30,12 @@ namespace Brainary.Commons.Extensions
         }
 
         /// <summary>
-        /// Obtain enum value from string
+        /// Converts a string into an enum of a given type
         /// </summary>
         /// <typeparam name="T">Enum type</typeparam>
         /// <param name="value">String value</param>
         /// <returns>Enum value</returns>
-        public static T ParseEnum<T>(this string value)
+        public static T AsEnum<T>(this string value)
         {
             return (T)Enum.Parse(typeof(T), value);
         }
