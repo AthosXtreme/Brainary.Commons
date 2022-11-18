@@ -6,24 +6,38 @@ namespace Brainary.Commons.Domain
     /// Represents a business logic exception
     /// </summary>
     public class BusinessException : Exception
-	{
-		public BusinessException()
-		{
-		}
+    {
+        public int Code { get; set; } = -1;
 
-		public BusinessException(string message)
-			: base(message)
-		{
-		}
+        public BusinessException()
+        {
+        }
 
-		public BusinessException(string message, Exception inner)
-			: base(message, inner)
-		{
-		}
+        public BusinessException(string message)
+            : base(message)
+        {
+        }
 
-		protected BusinessException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
-	} 
+        public BusinessException(int code, string message)
+            : base(message)
+        {
+            Code = code;
+        }
+
+        public BusinessException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
+
+        public BusinessException(int code, string message, Exception inner)
+            : base(message, inner)
+        {
+            Code = code;
+        }
+
+        protected BusinessException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+    }
 }
