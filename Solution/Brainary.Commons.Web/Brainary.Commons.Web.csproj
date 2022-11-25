@@ -1,11 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
-
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -21,7 +20,7 @@
 
 	<ItemGroup>
 		<EmbeddedResource Update="Resources\DataAnnotations.es.resx">
-		  <Generator></Generator>
+			<Generator></Generator>
 		</EmbeddedResource>
 		<EmbeddedResource Update="Resources\DataAnnotations.resx">
 			<Generator>ResXFileCodeGenerator</Generator>

@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace Brainary.Commons.Extensions
 {
     public static partial class Extensions
@@ -18,22 +15,25 @@ namespace Brainary.Commons.Extensions
         }
 
         /// <summary>
-        /// Get MD5 hash from string
+        /// Replaces {key} with "value" in a string
         /// </summary>
-        /// <param name="str">String</param>
-        /// <returns>String</returns>
-        public static string GetMd5Hash(this string str)
+        /// <param name="format">Composite format string</param>
+        /// <param name="args">Anonymous object with key/values to apply over <paramref name="format"/></param>
+        public static string Format(this string format, object args)
         {
-            using (var md5Hash = MD5.Create())
-            {
-                var data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(str));
-                var builder = new StringBuilder();
+            if (format == null)
+                throw new ArgumentNullException(nameof(format));
 
-                foreach (var t in data)
-                    builder.Append(t.ToString("x2"));
+            if (!args.GetType().IsAnonymousType())
+                throw new FormatException($"{nameof(args)} Type is invalid.");
 
-                return builder.ToString();
-            }
+            var parameters = args.GetType().GetProperties().ToDictionary(x => $"{{{x.Name}}}", x => x.GetValue(args, null));
+
+            var sb = new System.Text.StringBuilder(format);
+            foreach (var kv in parameters)
+                sb.Replace(kv.Key, kv.Value != null ? kv.Value.ToString() : "");
+
+            return sb.ToString();
         }
     }
 }
