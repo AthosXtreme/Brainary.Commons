@@ -1,7 +1,11 @@
 using System.Reflection;
+using System.Text.Json.Serialization;
 using Brainary.Commons.Data.Annotations;
+using Brainary.Commons.Domain;
+using Brainary.Commons.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Brainary.Commons.Data
 {
@@ -89,6 +93,15 @@ namespace Brainary.Commons.Data
                     if (defaultValueSqlAttribute != null)
                         RelationalPropertyExtensions.SetDefaultValueSql(prop, defaultValueSqlAttribute.Statement);
                 }
+            }
+        }
+
+        public static void UseStringEnumValues(this ModelBuilder modelBuilder)
+        {
+            foreach (var (prop, enumType) in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(s => (s, Nullable.GetUnderlyingType(s.ClrType) ?? s.ClrType))).Where(w => w.Item2.IsEnum))
+            {
+                var converterType = typeof(EnumToStringConverter<>).MakeGenericType(enumType);
+                prop.SetValueConverter((ValueConverter)Activator.CreateInstance(converterType)!);
             }
         }
     }
