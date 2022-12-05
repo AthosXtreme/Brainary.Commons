@@ -70,6 +70,15 @@ namespace Brainary.Commons.Web.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a {1} character limit exceeded..
+        /// </summary>
+        internal static string MaxLengthAttribute {
+            get {
+                return ResourceManager.GetString("MaxLengthAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Required field..
         /// </summary>
         internal static string RequiredAttribute {

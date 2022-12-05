@@ -120,6 +120,9 @@
   <data name="EmailAddressAttribute" xml:space="preserve">
     <value>Email inválido.</value>
   </data>
+  <data name="MaxLengthAttribute" xml:space="preserve">
+    <value>Límite de {1} caracteres excedido.</value>
+  </data>
   <data name="RequiredAttribute" xml:space="preserve">
     <value>Campo requerido.</value>
   </data>
