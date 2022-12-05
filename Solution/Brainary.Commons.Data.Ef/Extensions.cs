@@ -30,47 +30,96 @@ namespace Brainary.Commons.Data
 
         public static void RemovePluralizingTableName(this ModelBuilder modelBuilder)
         {
-            foreach (IMutableEntityType entityType in modelBuilder.Model.GetEntityTypes())
+            var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
+            var idCount = 1;
+            var types = modelBuilder.Model.GetEntityTypes();
+            var strLen = types.Count().ToString().Length;
+            var digits = strLen > 2 ? strLen : 2;
+            foreach (IMutableEntityType entityType in types)
             {
-                entityType.SetTableName(entityType.DisplayName());
+                var idName = entityType.ShortName();
+                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                entityType.SetTableName(idName);
+                idCount++;
             }
         }
 
         public static void AddTableNamePrefix(this ModelBuilder modelBuilder, string prefix)
         {
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
+            var idCount = 1;
+            var types = modelBuilder.Model.GetEntityTypes();
+            var strLen = types.Count().ToString().Length;
+            var digits = strLen > 2 ? strLen : 2;
+            foreach (var entityType in types)
             {
-                entityType.SetTableName(prefix + ((IEntityType)(object)entityType).GetTableName());
+                var idName = $"{prefix}{entityType.GetTableName()}";
+                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                entityType.SetTableName(idName);
+                idCount++;
             }
         }
 
         public static void UseShortNamePk(this ModelBuilder modelBuilder)
         {
-            foreach (var (entityType, key) in modelBuilder.Model.GetEntityTypes().SelectMany(s => s.GetKeys().Where(w => w.IsPrimaryKey()).Select(e => (s, e))))
+            var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
+            var idCount = 1;
+            var types = modelBuilder.Model.GetEntityTypes().SelectMany(s => s.GetKeys().Where(w => w.IsPrimaryKey()).Select(e => (s, e)));
+            var strLen = types.Count().ToString().Length;
+            var digits = strLen > 2 ? strLen : 2;
+            foreach (var (entityType, key) in types)
             {
-                key.SetName("PK_" + entityType.DisplayName());
+                var idName = $"PK_{entityType.ShortName()}";
+                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                key.SetName(idName);
+                idCount++;
             }
         }
 
         public static void UseShortNameFk(this ModelBuilder modelBuilder)
         {
-            foreach (var tuple in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetForeignKeys()
-            .GroupBy(k => k.PrincipalEntityType.DisplayName(), (k, v) => new { Key = k, Many = v.Count() > 1, Values = v })
-            .SelectMany(group => group.Values.Select((s, i) => new { Index = i, Value = s }).Select(fk => (entityType, group, fk)))))
+            var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
+            var idCount = 1;
+            var types = modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetForeignKeys()
+            .GroupBy(k => k.PrincipalEntityType.ShortName(), (k, v) => new { Key = k, Many = v.Count() > 1, Values = v })
+            .SelectMany(group => group.Values.Select((s, i) => new { Index = i, Value = s }).Select(fk => (entityType, group, fk))));
+            var strLen = types.Count().ToString().Length;
+            var digits = strLen > 2 ? strLen : 2;
+            foreach (var tuple in types)
             {
                 var entityType = tuple.entityType;
                 var group = tuple.group;
                 var fk = tuple.fk;
-                string text = group.Many ? $"_{fk.Index:D2}" : string.Empty;
-                RelationalForeignKeyExtensions.SetConstraintName(fk.Value, "FK_" + entityType.DisplayName() + "_" + fk.Value.PrincipalEntityType.DisplayName() + text);
+                var index = group.Many ? $"_{fk.Index:D2}" : string.Empty;
+                var idName = $"FK_{entityType.ShortName()}_{fk.Value.PrincipalEntityType.ShortName()}{index}";
+                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                RelationalForeignKeyExtensions.SetConstraintName(fk.Value, idName);
+                idCount++;
             }
         }
 
         public static void UseShortNameIx(this ModelBuilder modelBuilder)
         {
-            foreach (var (entityType, ix) in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetIndexes().Select((s, i) => (entityType, new { Index = i, Value = s }))))
+            var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
+            var idCount = 1;
+            var types = modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetIndexes().Select((s, i) => (entityType, new { Index = i, Value = s })));
+            var strLen = types.Count().ToString().Length;
+            var digits = strLen > 2 ? strLen : 2;
+            foreach (var (entityType, ix) in types)
             {
-                ix.Value.SetDatabaseName($"IX_{ix.Index + 1:D2}_{entityType.DisplayName()}");
+                var idName = $"IX_{ix.Index + 1:D2}_{entityType.ShortName()}";
+                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                ix.Value.SetDatabaseName(idName);
+                idCount++;
+            }
+        }
+
+        public static void UseStringEnumValues(this ModelBuilder modelBuilder)
+        {
+            foreach (var (prop, enumType) in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(s => (s, Nullable.GetUnderlyingType(s.ClrType) ?? s.ClrType))).Where(w => w.Item2.IsEnum))
+            {
+                var converterType = typeof(EnumToStringConverter<>).MakeGenericType(enumType);
+                prop.SetValueConverter((ValueConverter)Activator.CreateInstance(converterType)!);
             }
         }
 
@@ -93,15 +142,6 @@ namespace Brainary.Commons.Data
                     if (defaultValueSqlAttribute != null)
                         RelationalPropertyExtensions.SetDefaultValueSql(prop, defaultValueSqlAttribute.Statement);
                 }
-            }
-        }
-
-        public static void UseStringEnumValues(this ModelBuilder modelBuilder)
-        {
-            foreach (var (prop, enumType) in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(s => (s, Nullable.GetUnderlyingType(s.ClrType) ?? s.ClrType))).Where(w => w.Item2.IsEnum))
-            {
-                var converterType = typeof(EnumToStringConverter<>).MakeGenericType(enumType);
-                prop.SetValueConverter((ValueConverter)Activator.CreateInstance(converterType)!);
             }
         }
     }
