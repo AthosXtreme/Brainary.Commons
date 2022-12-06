@@ -52,8 +52,8 @@ namespace Brainary.Commons.Extensions
             [return: NotNullIfNotNull("node")]
             public override Expression? Visit(Expression? node)
             {
-                if (parameterlessExpressions.Contains(node!))
-                    return Evaluate(node!);
+                if (node != null && parameterlessExpressions.Contains(node))
+                    return Evaluate(node);
                 else
                     return base.Visit(node);
             }
