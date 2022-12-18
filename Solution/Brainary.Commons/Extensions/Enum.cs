@@ -6,27 +6,39 @@ namespace Brainary.Commons.Extensions
     public static partial class Extensions
     {
         /// <summary>
-        /// Obtain description attribute from enum value
+        /// Obtain display description attribute from enum value
         /// </summary>
         /// <param name="value">Enum value</param>
         /// <returns>Description string</returns>
         public static string GetDescription(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute : null;
-            return attribute == null ? value.ToString("G") : attribute.Description;
+            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
+            return attribute == null ? value.ToString("G") : attribute?.Description ?? string.Empty;
         }
 
         /// <summary>
         /// Obtain display name attribute from enum value
         /// </summary>
         /// <param name="value">Enum value</param>
-        /// <returns>Description string</returns>
+        /// <returns>Display Name string</returns>
         public static string GetDisplayName(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
             var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
             return attribute == null ? value.ToString("G") : attribute?.Name ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Obtain display short name attribute from enum value
+        /// </summary>
+        /// <param name="value">Enum value</param>
+        /// <returns>Short Name string</returns>
+        public static string GetShortName(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
+            return attribute == null ? value.ToString("G") : attribute?.ShortName ?? string.Empty;
         }
 
         /// <summary>

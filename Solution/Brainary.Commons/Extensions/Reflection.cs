@@ -158,22 +158,6 @@ namespace Brainary.Commons.Extensions
             return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(prop => prop.PropertyType.IsValueType).ToDictionary(k => k.Name, v => v.GetValue(obj, null));
         }
 
-        /// <summary>
-        /// Get any property value of <see cref="DisplayAttribute"/> in <paramref name="value"/> member
-        /// </summary>
-        /// <typeparam name="T">Return type</typeparam>
-        /// <param name="value">Current object</param>
-        /// <param name="target">DisplayAttibute target property</param>
-        /// <param name="callerName">Automatic member name extracted from <paramref name="value"/></param>
-        /// <returns>The property value</returns>
-        public static T? GetDisplayValue<T>(this object value, Func<DisplayAttribute, T> target, [CallerArgumentExpression(nameof(value))] string callerName = "")
-        {
-            var memberName = callerName.Split('.').Reverse().First();
-            var memberInfo = value.GetType().GetMember(memberName).FirstOrDefault();
-            var displayAttribute = (DisplayAttribute?)memberInfo?.GetCustomAttributes(typeof(DisplayAttribute), false).FirstOrDefault();
-            return displayAttribute != null ? target(displayAttribute) : default;
-        }
-
         private static IEnumerable<T> GetCustomAttributes<T>(MemberInfo info, AttributeTargets level)
         {
             var list = new List<T>();

@@ -5,13 +5,13 @@ namespace Brainary.Commons.Util
     /// <summary>
     /// Utilidad para representación y operaciones de RUT chileno
     /// </summary>
-    public class Rut
+    public readonly struct Rut
     {
         private const int inicioEmpresa = 48000000; //SII asigna desde esta cantidad
         private readonly CultureInfo culture = CultureInfo.CreateSpecificCulture("es-CL");
 
-        public string Num { get; set; }
-        public string Dv { get; set; }
+        public string Num { get;  init; }
+        public string Dv { get; init; }
 
         public Rut(string rut)
         {
@@ -21,13 +21,13 @@ namespace Brainary.Commons.Util
 
         public bool IsValid()
         {
-            return int.TryParse(Num, System.Globalization.NumberStyles.AllowThousands, culture, out var num) && Dv.ToUpper().Equals(CalculaDv(num));
+            return int.TryParse(Num, NumberStyles.AllowThousands, culture, out var num) && Dv.ToUpper().Equals(CalculaDv(num));
         }
 
         public bool IsEmpresa()
         {
-            if (!IsValid()) throw new System.InvalidOperationException("Rut inválido");
-            return int.Parse(Num, System.Globalization.NumberStyles.AllowThousands, culture) >= inicioEmpresa;
+            if (!IsValid()) throw new InvalidOperationException("Rut inválido");
+            return int.Parse(Num, NumberStyles.AllowThousands, culture) >= inicioEmpresa;
         }
 
         public override string ToString()
@@ -41,7 +41,7 @@ namespace Brainary.Commons.Util
         /// <param name="format">[L]impio, [G]uión, [C]ompleto, [D]ecimal, [N]umérico</param>
         public string ToString(string format)
         {
-            if (!IsValid()) throw new System.InvalidOperationException("Rut inválido");
+            if (!IsValid()) throw new InvalidOperationException("Rut inválido");
             switch (format.ToUpper())
             {
                 case "L":
@@ -55,22 +55,25 @@ namespace Brainary.Commons.Util
                 case "N":
                     return int.Parse(Num, NumberStyles.AllowThousands, culture).ToString("N0", culture);
                 default:
-                    throw new System.ArgumentException("Formato inválido", "format");
+                    throw new ArgumentException("Formato inválido", nameof(format));
             }
         }
 
         private static string CalculaDv(int num)
         {
-            int suma = 0;
-            int multiplicador = 1;
+            var suma = 0;
+            var multiplicador = 1;
+
             while (num != 0)
             {
                 multiplicador++;
                 if (multiplicador == 8)
                     multiplicador = 2;
+
                 suma += (num % 10) * multiplicador;
-                num = num / 10;
+                num /= 10;
             }
+
             suma = 11 - (suma % 11);
             if (suma == 11)
             {

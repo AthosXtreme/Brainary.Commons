@@ -7,9 +7,9 @@ namespace Brainary.Commons.Domain
     /// </summary>
     public abstract class Entity
     {
-        protected object id = default!;
+        protected object? id;
 
-        public object Id { get => id; set => id = value; }
+        public object? Id { get => id; set => id = value; }
     }
 
     /// <summary>
@@ -20,6 +20,6 @@ namespace Brainary.Commons.Domain
 		[Key]
 		[Display(Order = 0)]
 		[MaxLength(16)] //used when text type
-		public new T Id { get => (T)id; set => id = value; }
+		public new T? Id { get => id != null ? (T?)id : default; set => id = value; }
 	} 
 }
