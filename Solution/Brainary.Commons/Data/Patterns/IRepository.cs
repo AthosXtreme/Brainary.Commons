@@ -9,12 +9,18 @@ namespace Brainary.Commons.Data.Patterns
     {
         void Create(T instance);
 
-        void Commit();
-
         void Update(T instance);
 
         void CreateOrUpdate(T instance);
 
         void Remove(T instance);
+
+        void CreateRange(IEnumerable<T> instances);
+
+        void UpdateRange(IEnumerable<T> instances);
+
+        void RemoveRange(IEnumerable<T> instances);
+
+        void Commit();
     }
 }

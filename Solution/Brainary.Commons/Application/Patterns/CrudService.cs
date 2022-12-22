@@ -38,10 +38,13 @@ namespace Brainary.Commons.Application.Patterns
         {
             T? instance = Repository.FindById(id);
             if (instance != null)
-            {
-                Repository.Remove(instance);
-                Repository.Commit();
-            }
+                Delete(instance);
+        }
+
+        public virtual void Delete(T entity)
+        {
+            Repository.Remove(entity);
+            Repository.Commit();
         }
     }
 }

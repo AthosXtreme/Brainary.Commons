@@ -14,5 +14,7 @@ namespace Brainary.Commons.Application.Patterns
         void CreateOrUpdate(T entity);
 
         void Delete(object id);
+
+        void Delete(T entity);
     }
 }

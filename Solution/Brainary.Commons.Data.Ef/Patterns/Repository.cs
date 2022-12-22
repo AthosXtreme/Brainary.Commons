@@ -9,10 +9,7 @@ namespace Brainary.Commons.Data.Patterns
     /// <typeparam name="T">Entity type</typeparam>
     public abstract class Repository<T> : ReadOnlyRepository<T>, IRepository<T>, IReadOnlyRepository<T> where T : Entity
     {
-        public Repository(DbContext context)
-            : base(context)
-        {
-        }
+        public Repository(DbContext context) : base(context) { }
 
         public virtual void Create(T instance)
         {
@@ -26,11 +23,6 @@ namespace Brainary.Commons.Data.Patterns
                 throw new EntityAlreadyExistsException();
 
             set.Add(instance);
-        }
-
-        public virtual void Commit()
-        {
-            Context.SaveChanges();
         }
 
         public virtual void Update(T instance)
@@ -49,7 +41,7 @@ namespace Brainary.Commons.Data.Patterns
             }
         }
 
-        public void CreateOrUpdate(T instance)
+        public virtual void CreateOrUpdate(T instance)
         {
             Context.Set<T>().Update(instance);
         }
@@ -67,6 +59,26 @@ namespace Brainary.Commons.Data.Patterns
                 Context.Entry(instance).State = EntityState.Unchanged;
                 set.Remove(instance);
             }
+        }
+
+        public virtual void CreateRange(IEnumerable<T> instances)
+        {
+            Context.AddRange(instances);
+        }
+
+        public virtual void UpdateRange(IEnumerable<T> instances)
+        {
+            Context.UpdateRange(instances);
+        }
+
+        public virtual void RemoveRange(IEnumerable<T> instances)
+        {
+            Context.RemoveRange(instances);
+        }
+
+        public virtual void Commit()
+        {
+            Context.SaveChanges();
         }
     }
 }
