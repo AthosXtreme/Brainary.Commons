@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brainary.Commons.Data.Patterns
 {
+    /// <summary>
+    /// Entity Framework <see cref="ISpecification{T}"/> evaluator
+    /// </summary>
     internal static class SpecificationEvaluator<T> where T : Entity
     {
         public static IQueryable<T> GetQuery(IQueryable<T> inputQuery, ISpecification<T> specification)

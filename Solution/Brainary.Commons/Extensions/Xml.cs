@@ -48,15 +48,13 @@ namespace Brainary.Commons.Extensions
             try
             {
                 sr = new StringReader(xmlObject);
-                using (var xmlReader = new XmlTextReader(sr))
-                {
-                    sr = null;
-                    return (T?)serializer.Deserialize(xmlReader);
-                }
+                using var xmlReader = new XmlTextReader(sr);
+                sr = null;
+                return (T?)serializer.Deserialize(xmlReader);
             }
             finally
             {
-                if (sr != null) sr.Dispose();
+                sr?.Dispose();
             }
         }
     }

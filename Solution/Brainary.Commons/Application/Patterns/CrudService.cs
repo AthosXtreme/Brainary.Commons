@@ -4,7 +4,7 @@ using Brainary.Commons.Domain;
 namespace Brainary.Commons.Application.Patterns
 {
     /// <summary>
-    /// Base class for CRUD business logic service over an entity
+    /// Base class for CRUD business logic service on an entity
     /// </summary>
     public abstract class CrudService<T> : ReadService<T>, ICrudService<T>, IReadService<T> where T : Entity
     {

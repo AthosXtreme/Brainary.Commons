@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Brainary.Commons.Serialization
 {
+    /// <summary>
+    /// Json converter for <see cref="Specification{T}"/>
+    /// </summary>
     public sealed class SpecificationJsonConverter<T> : JsonConverter<Specification<T>>
     {
         public override Specification<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

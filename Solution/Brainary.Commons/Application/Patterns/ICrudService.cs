@@ -3,7 +3,7 @@ using Brainary.Commons.Domain;
 namespace Brainary.Commons.Application.Patterns
 {
     /// <summary>
-    /// CRUD contract for business logic service
+    /// CRUD contract for business logic service on an entity
     /// </summary>
     public interface ICrudService<T> : IReadService<T> where T : Entity
     {

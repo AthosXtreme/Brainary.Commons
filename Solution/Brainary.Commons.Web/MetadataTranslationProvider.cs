@@ -13,14 +13,14 @@ namespace Brainary.Commons.Web
         private readonly Type resourceType;
 
         /// <summary>
-        /// Uses default Resource messages
+        /// Use default Resource messages
         /// </summary>
         public MetadataTranslationProvider() : this(typeof(Resources.DataAnnotations))
         {
         }
 
         /// <summary>
-        /// Uses defined Resource messages
+        /// Use custom Resource messages
         /// </summary>
         /// <param name="type">Resource type</param>
         public MetadataTranslationProvider(Type type)
@@ -29,6 +29,10 @@ namespace Brainary.Commons.Web
             resourceManager = new ResourceManager(type);
         }
 
+        /// <summary>
+        /// Set validation metadata for current context
+        /// </summary>
+        /// <param name="context">Provider context</param>
         public void CreateValidationMetadata(ValidationMetadataProviderContext context)
         {
             foreach (var attribute in context.ValidationMetadata.ValidatorMetadata)

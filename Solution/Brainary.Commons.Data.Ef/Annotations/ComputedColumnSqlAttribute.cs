@@ -1,5 +1,8 @@
 namespace Brainary.Commons.Data.Annotations
 {
+    /// <summary>
+    /// SQL computed value for column
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class ComputedColumnSqlAttribute : Attribute
     {

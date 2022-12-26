@@ -158,6 +158,9 @@ namespace Brainary.Commons.Extensions
             return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(prop => prop.PropertyType.IsValueType).ToDictionary(k => k.Name, v => v.GetValue(obj, null));
         }
 
+        /// <summary>
+        /// Custom attributes evaluator
+        /// </summary>
         private static IEnumerable<T> GetCustomAttributes<T>(MemberInfo info, AttributeTargets level)
         {
             var list = new List<T>();

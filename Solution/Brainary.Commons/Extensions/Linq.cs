@@ -5,6 +5,11 @@ namespace Brainary.Commons.Extensions
 {
     public static partial class Extensions
     {
+        /// <summary>
+        /// Simplify an expresion translating all variables to constant values
+        /// </summary>
+        /// <param name="expression">The expression</param>
+        /// <returns>Simplified expression</returns>
         public static Expression Simplify(this Expression expression)
         {
             var searcher = new ParameterlessExpressionSearcher();
@@ -12,10 +17,18 @@ namespace Brainary.Commons.Extensions
             return new ParameterlessExpressionEvaluator(searcher.ParameterlessExpressions).Visit(expression);
         }
 
+        /// <summary>
+        /// Simplify a typed expresion translating all variables to constant values
+        /// </summary>
+        /// <typeparam name="T">Expression type</typeparam>
+        /// <param name="expression">The typed expression</param>
+        /// <returns>Simplified typed expression</returns>
         public static Expression<T> Simplify<T>(this Expression<T> expression)
         {
             return (Expression<T>)Simplify((Expression)expression);
         }
+
+        #region EXPRESSION TRANSLATORS
 
         private class ParameterlessExpressionSearcher : ExpressionVisitor
         {
@@ -67,5 +80,7 @@ namespace Brainary.Commons.Extensions
                 return Expression.Constant(value, node.Type);
             }
         }
+
+        #endregion
     }
 }

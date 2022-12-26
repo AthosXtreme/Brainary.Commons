@@ -28,6 +28,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Uses entity name as table name
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void RemovePluralizingTableName(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
@@ -44,6 +48,11 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Add a prefix to table names
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
+        /// <param name="prefix">The prefix</param>
         public static void AddTableNamePrefix(this ModelBuilder modelBuilder, string prefix)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
@@ -60,6 +69,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Set short PK names
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void UseShortNamePk(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
@@ -76,6 +89,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Set short FK names
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void UseShortNameFk(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
@@ -98,6 +115,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Set short IX names
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void UseShortNameIx(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
@@ -114,6 +135,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Set string value for enums
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void UseStringEnumValues(this ModelBuilder modelBuilder)
         {
             foreach (var (prop, enumType) in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(s => (s, Nullable.GetUnderlyingType(s.ClrType) ?? s.ClrType))).Where(w => w.Item2.IsEnum))
@@ -123,6 +148,10 @@ namespace Brainary.Commons.Data
             }
         }
 
+        /// <summary>
+        /// Applies known custom atrtibutes for model
+        /// </summary>
+        /// <param name="modelBuilder">Model builder instance</param>
         public static void ApplyCustomAttributes(this ModelBuilder modelBuilder)
         {
             foreach (var tuple in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(prop => (entityType, prop))))

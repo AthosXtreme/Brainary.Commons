@@ -49,6 +49,8 @@ namespace Brainary.Commons.Extensions
             return GenerateFile(table, separator).ToString();
         }
 
+        #region GENERATORS BY TYPE
+
         private static StringBuilder GenerateFile<T>(this IList<T> list, char separator)
         {
             var sb = new StringBuilder();
@@ -102,5 +104,7 @@ namespace Brainary.Commons.Extensions
 
             return textOutput;
         }
+
+        #endregion
     }
 }

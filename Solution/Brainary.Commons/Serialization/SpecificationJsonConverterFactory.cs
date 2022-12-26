@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace Brainary.Commons.Serialization
 {
+    /// <summary>
+    /// Json converter factory for <see cref="Specification{T}"/>
+    /// </summary>
     public class SpecificationJsonConverterFactory : JsonConverterFactory
     {
         public override bool CanConvert(Type typeToConvert)

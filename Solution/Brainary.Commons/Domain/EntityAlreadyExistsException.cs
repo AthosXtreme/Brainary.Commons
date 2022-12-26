@@ -2,6 +2,9 @@ using System.Runtime.Serialization;
 
 namespace Brainary.Commons.Domain
 {
+    /// <summary>
+    /// Represents an exception for an already existing entity
+    /// </summary>
 	public class EntityAlreadyExistsException : Exception
 	{
 		public EntityAlreadyExistsException()

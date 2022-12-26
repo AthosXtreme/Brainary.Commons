@@ -1,5 +1,8 @@
 namespace Brainary.Commons.Data.Annotations
 {
+    /// <summary>
+    /// SQL default column value
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public sealed class DefaultValueSqlAttribute : Attribute
     {
