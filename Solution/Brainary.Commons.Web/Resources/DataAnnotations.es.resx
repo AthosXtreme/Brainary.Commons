@@ -126,4 +126,7 @@
   <data name="RequiredAttribute" xml:space="preserve">
     <value>Campo requerido.</value>
   </data>
+  <data name="RutAttribute" xml:space="preserve">
+    <value>RUT inválido.</value>
+  </data>
 </root>

@@ -86,5 +86,14 @@ namespace Brainary.Commons.Web.Resources {
                 return ResourceManager.GetString("RequiredAttribute", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Invalid RUT..
+        /// </summary>
+        internal static string RutAttribute {
+            get {
+                return ResourceManager.GetString("RutAttribute", resourceCulture);
+            }
+        }
     }
 }
