@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Brainary.Commons.Data.Patterns
 {
     /// <summary>
-    /// Entity Framework implementation of <see cref="IReadOnlyRepository{T}"/>
+    /// Entity Framework implementation of <see cref="IReadOnlyRepositoryAsync{T}"/>
     /// </summary>
     /// <typeparam name="T">Entity type</typeparam>
-    public abstract class ReadOnlyRepository<T> : IReadOnlyRepository<T> where T : Entity
+    public abstract class ReadOnlyRepositoryAsync<T> : IReadOnlyRepositoryAsync<T> where T : Entity
     {
         protected DbContext Context { get; set; }
 
-        public ReadOnlyRepository(DbContext context)
+        public ReadOnlyRepositoryAsync(DbContext context)
         {
             Context = context;
         }
@@ -32,19 +32,19 @@ namespace Brainary.Commons.Data.Patterns
             return Context.Set<T>();
         }
 
-        public virtual T? FindById(object id)
+        public virtual async Task<T?> FindById(object id)
         {
-            return Context.Set<T>().FirstOrDefault(obj => obj.Id == id);
+            return await Context.Set<T>().FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public virtual T? FindOne(Expression<Func<T, bool>> func)
+        public virtual async Task<T?> FindOne(Expression<Func<T, bool>> func)
         {
-            return Context.Set<T>().FirstOrDefault(func);
+            return await Context.Set<T>().FirstOrDefaultAsync(func);
         }
 
-        public virtual bool Exists(Expression<Func<T, bool>> func)
+        public virtual async Task<bool> Exists(Expression<Func<T, bool>> func)
         {
-            return Context.Set<T>().Any(func);
+            return await Context.Set<T>().AnyAsync(func);
         }
 
         protected int ParsePage(int current, int total, int page)

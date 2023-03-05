@@ -5,20 +5,20 @@ using Brainary.Commons.Domain;
 namespace Brainary.Commons.Application.Patterns
 {
     /// <summary>
-    /// Base class for readonly business logic service on an entity
+    /// Base class for async readonly business logic service on an entity
     /// </summary>
-    public abstract class ReadService<T> : IReadService<T> where T : Entity
+    public abstract class ReadServiceAsync<T> : IReadServiceAsync<T> where T : Entity
     {
-        protected IReadOnlyRepository<T> Repository { get; set; }
+        protected IReadOnlyRepositoryAsync<T> Repository { get; set; }
 
-        public ReadService(IReadOnlyRepository<T> repository)
+        public ReadServiceAsync(IReadOnlyRepositoryAsync<T> repository)
         {
             Repository = repository;
         }
 
-        public virtual T? ReadOne(object id)
+        public virtual async Task<T?> ReadOne(object id)
         {
-            return Repository.FindById(id);
+            return await Repository.FindById(id);
         }
 
         public virtual IQueryable<T> ReadAll()

@@ -5,11 +5,11 @@ using Brainary.Commons.Domain;
 namespace Brainary.Commons.Application.Patterns
 {
     /// <summary>
-    /// Readonly contract for business logic service on an entity
+    /// Readonly contract for async business logic service on an entity
     /// </summary>
-    public interface IReadService<T> where T : Entity
+    public interface IReadServiceAsync<T> where T : Entity
     {
-        T? ReadOne(object id);
+        Task<T?> ReadOne(object id);
 
         IQueryable<T> ReadAll();
 

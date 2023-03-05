@@ -6,7 +6,7 @@ namespace Brainary.Commons.Application.Patterns
     /// <summary>
     /// Base class for CRUD business logic service on an entity
     /// </summary>
-    public abstract class CrudService<T> : ReadService<T>, ICrudService<T>, IReadService<T> where T : Entity
+    public abstract class CrudService<T> : ReadService<T>, ICrudService<T> where T : Entity
     {
         protected new IRepository<T> Repository { get; set; }
 
