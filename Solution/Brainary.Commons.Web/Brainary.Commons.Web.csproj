@@ -11,6 +11,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Brainary.Commons\Brainary.Commons.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Update="Resources\DataAnnotations.Designer.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
