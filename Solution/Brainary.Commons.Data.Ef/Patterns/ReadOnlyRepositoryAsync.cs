@@ -17,19 +17,19 @@ namespace Brainary.Commons.Data.Patterns
             Context = context;
         }
 
-        public virtual IQueryable<T> Find(Expression<Func<T, bool>> func)
+        public virtual IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func)
         {
-            return Context.Set<T>().Where(func);
+            return Context.Set<T>().Where(func).AsAsyncEnumerable();
         }
 
-        public virtual IQueryable<T> Find(ISpecification<T> specification)
+        public virtual IAsyncEnumerable<T> Find(ISpecification<T> specification)
         {
-            return SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification);
+            return SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification).AsAsyncEnumerable();
         }
 
-        public virtual IQueryable<T> FindAll()
+        public virtual IAsyncEnumerable<T> FindAll()
         {
-            return Context.Set<T>();
+            return Context.Set<T>().AsAsyncEnumerable();
         }
 
         public virtual async Task<T?> FindById(object id)

@@ -21,17 +21,17 @@ namespace Brainary.Commons.Application.Patterns
             return await Repository.FindById(id);
         }
 
-        public virtual IQueryable<T> ReadAll()
+        public virtual IAsyncEnumerable<T> ReadAll()
         {
             return Repository.FindAll();
         }
 
-        public virtual IQueryable<T> ReadMany(Expression<Func<T, bool>> func)
+        public virtual IAsyncEnumerable<T> ReadMany(Expression<Func<T, bool>> func)
         {
             return Repository.Find(func);
         }
 
-        public virtual IQueryable<T> ReadMany(ISpecification<T> specification)
+        public virtual IAsyncEnumerable<T> ReadMany(ISpecification<T> specification)
         {
             return Repository.Find(specification);
         }

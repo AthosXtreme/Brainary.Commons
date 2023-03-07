@@ -11,10 +11,10 @@ namespace Brainary.Commons.Application.Patterns
     {
         Task<T?> ReadOne(object id);
 
-        IQueryable<T> ReadAll();
+        IAsyncEnumerable<T> ReadAll();
 
-        IQueryable<T> ReadMany(Expression<Func<T, bool>> func);
+        IAsyncEnumerable<T> ReadMany(Expression<Func<T, bool>> func);
 
-        IQueryable<T> ReadMany(ISpecification<T> specification);
+        IAsyncEnumerable<T> ReadMany(ISpecification<T> specification);
     }
 }

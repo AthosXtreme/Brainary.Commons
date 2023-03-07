@@ -8,11 +8,11 @@ namespace Brainary.Commons.Data.Patterns
     /// </summary>
     public interface IReadOnlyRepository<T> where T : Entity
     {
-        IQueryable<T> Find(Expression<Func<T, bool>> func);
+        IEnumerable<T> Find(Expression<Func<T, bool>> func);
 
-        IQueryable<T> Find(ISpecification<T> specification);
+        IEnumerable<T> Find(ISpecification<T> specification);
 
-        IQueryable<T> FindAll();
+        IEnumerable<T> FindAll();
 
         T? FindById(object id);
 
