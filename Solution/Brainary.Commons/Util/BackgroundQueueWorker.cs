@@ -2,6 +2,9 @@
 
 namespace Brainary.Commons.Util
 {
+    /// <summary>
+    /// Background tasks queue control.
+    /// </summary>
     public class BackgroundQueueWorker
     {
         private readonly ConcurrentQueue<Func<CancellationToken, Task>> workItems = new();

@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Brainary.Commons.Web
 {
+    /// <summary>
+    /// Background tasks queue implementation as Hosted Service.
+    /// </summary>
     public class BackgroundQueueService : BackgroundService
     {
         private readonly BackgroundQueueWorker queue;
