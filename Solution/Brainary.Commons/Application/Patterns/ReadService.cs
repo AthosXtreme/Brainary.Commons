@@ -26,9 +26,9 @@ namespace Brainary.Commons.Application.Patterns
             return Repository.FindAll();
         }
 
-        public virtual IEnumerable<T> ReadMany(Expression<Func<T, bool>> func)
+        public virtual IEnumerable<T> ReadMany(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            return Repository.Find(func);
+            return Repository.Find(func, include);
         }
 
         public virtual IEnumerable<T> ReadMany(ISpecification<T> specification)

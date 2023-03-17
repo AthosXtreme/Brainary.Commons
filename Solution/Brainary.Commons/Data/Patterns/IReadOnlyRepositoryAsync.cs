@@ -8,7 +8,7 @@ namespace Brainary.Commons.Data.Patterns
     /// </summary>
     public interface IReadOnlyRepositoryAsync<T> where T : Entity
     {
-        IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func);
+        IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include);
 
         IAsyncEnumerable<T> Find(ISpecification<T> specification);
 

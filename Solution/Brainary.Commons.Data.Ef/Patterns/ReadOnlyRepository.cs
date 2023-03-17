@@ -17,9 +17,12 @@ namespace Brainary.Commons.Data.Patterns
             Context = context;
         }
 
-        public virtual IEnumerable<T> Find(Expression<Func<T, bool>> func)
+        public virtual IEnumerable<T> Find(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>().Where(func);
+            var query = Context.Set<T>().Where(func);
+            foreach (var item in include)
+                query = query.Include(item);
+            return query;
         }
 
         public virtual IEnumerable<T> Find(ISpecification<T> specification)

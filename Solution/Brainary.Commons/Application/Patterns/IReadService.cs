@@ -13,7 +13,7 @@ namespace Brainary.Commons.Application.Patterns
 
         IEnumerable<T> ReadAll();
 
-        IEnumerable<T> ReadMany(Expression<Func<T, bool>> func);
+        IEnumerable<T> ReadMany(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include);
 
         IEnumerable<T> ReadMany(ISpecification<T> specification);
     }

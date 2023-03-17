@@ -8,21 +8,23 @@ namespace Brainary.Commons.Web
     /// </summary>
     public abstract class BackgroundScheduleService : BackgroundService
     {
-        private readonly ILogger<BackgroundScheduleService> logger;
+        private bool executeImmediate;
+        private readonly ILogger logger;
 
         public BackgroundScheduleService(ILogger<BackgroundScheduleService> logger)
         {
             this.logger = logger;
         }
 
-        protected abstract TimeSpan Interval { get; init; }
+        protected bool ExecuteImmediate { get => executeImmediate; init => executeImmediate = value; }
+
+        protected TimeSpan Interval { get; init; } = TimeSpan.FromMinutes(1);
 
         protected abstract Task Action(CancellationToken stoppingToken);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var timer = new PeriodicTimer(Interval);
-            while (await timer.WaitForNextTickAsync(stoppingToken))
+            async Task execute()
             {
                 try
                 {
@@ -32,6 +34,21 @@ namespace Brainary.Commons.Web
                 {
                     logger.LogError(ex, "An exception occurred in a background scheduled task.");
                 }
+            }
+
+            if (executeImmediate)
+            {
+                logger.LogDebug("Executing scheduled action immediately.");
+                await execute();
+                executeImmediate = false;
+            }
+
+            using var timer = new PeriodicTimer(Interval);
+            logger.LogDebug($"Periodic timer set for {Interval}");
+            while (await timer.WaitForNextTickAsync(stoppingToken))
+            {
+                logger.LogDebug("Executing scheduled action.");
+                await execute();
             }
         }
     }

@@ -10,7 +10,7 @@ namespace Brainary.Commons.Web
     public class BackgroundQueueService : BackgroundService
     {
         private readonly BackgroundQueueWorker queue;
-        private readonly ILogger<BackgroundQueueService> logger;
+        private readonly ILogger logger;
 
         public BackgroundQueueService(BackgroundQueueWorker queue, ILogger<BackgroundQueueService> logger)
         {
@@ -28,6 +28,7 @@ namespace Brainary.Commons.Web
                 {
                     try
                     {
+                        logger.LogDebug("Executing queued task.");
                         await workItem(stoppingToken);
                     }
                     catch (Exception ex)

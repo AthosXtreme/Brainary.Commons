@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Brainary.Commons.Data.Patterns
 {
@@ -17,9 +18,13 @@ namespace Brainary.Commons.Data.Patterns
             Context = context;
         }
 
-        public virtual IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func)
+        public virtual IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>().Where(func).AsAsyncEnumerable();
+            var query = Context.Set<T>().Where(func);
+            foreach (var item in include)
+                query = query.Include(item);
+            return query.AsAsyncEnumerable();
+
         }
 
         public virtual IAsyncEnumerable<T> Find(ISpecification<T> specification)
