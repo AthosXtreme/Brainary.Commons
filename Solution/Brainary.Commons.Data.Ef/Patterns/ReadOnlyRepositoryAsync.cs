@@ -1,3 +1,4 @@
+using System;
 using System.Linq.Expressions;
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +21,10 @@ namespace Brainary.Commons.Data.Patterns
 
         public virtual IAsyncEnumerable<T> Find(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            var query = Context.Set<T>().Where(func);
+            var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
-            return query.AsAsyncEnumerable();
+            return query.Where(func).AsAsyncEnumerable();
 
         }
 
@@ -32,19 +33,28 @@ namespace Brainary.Commons.Data.Patterns
             return SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification).AsAsyncEnumerable();
         }
 
-        public virtual IAsyncEnumerable<T> FindAll()
+        public virtual IAsyncEnumerable<T> FindAll(params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>().AsAsyncEnumerable();
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return query.AsAsyncEnumerable();
         }
 
-        public virtual async Task<T?> FindById(object id)
+        public virtual async Task<T?> FindById(object id, params Expression<Func<T, object>>[] include)
         {
-            return await Context.Set<T>().FirstOrDefaultAsync(obj => obj.Id == id);
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return await query.FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public virtual async Task<T?> FindOne(Expression<Func<T, bool>> func)
+        public virtual async Task<T?> FindOne(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            return await Context.Set<T>().FirstOrDefaultAsync(func);
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return await query.FirstOrDefaultAsync(func);
         }
 
         public virtual async Task<bool> Exists(Expression<Func<T, bool>> func)

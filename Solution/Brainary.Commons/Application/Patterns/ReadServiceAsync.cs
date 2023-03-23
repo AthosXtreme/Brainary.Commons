@@ -16,14 +16,14 @@ namespace Brainary.Commons.Application.Patterns
             Repository = repository;
         }
 
-        public virtual async Task<T?> ReadOne(object id)
+        public virtual async Task<T?> ReadOne(object id, params Expression<Func<T, object>>[] include)
         {
-            return await Repository.FindById(id);
+            return await Repository.FindById(id, include);
         }
 
-        public virtual IAsyncEnumerable<T> ReadAll()
+        public virtual IAsyncEnumerable<T> ReadAll(params Expression<Func<T, object>>[] include)
         {
-            return Repository.FindAll();
+            return Repository.FindAll(include);
         }
 
         public virtual IAsyncEnumerable<T> ReadMany(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)

@@ -16,14 +16,14 @@ namespace Brainary.Commons.Application.Patterns
             Repository = repository;
         }
 
-        public virtual T? ReadOne(object id)
+        public virtual T? ReadOne(object id, params Expression<Func<T, object>>[] include)
         {
-            return Repository.FindById(id);
+            return Repository.FindById(id, include);
         }
 
-        public virtual IEnumerable<T> ReadAll()
+        public virtual IEnumerable<T> ReadAll(params Expression<Func<T, object>>[] include)
         {
-            return Repository.FindAll();
+            return Repository.FindAll(include);
         }
 
         public virtual IEnumerable<T> ReadMany(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)

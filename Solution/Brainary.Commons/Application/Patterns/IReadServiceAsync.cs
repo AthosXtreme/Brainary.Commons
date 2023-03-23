@@ -9,9 +9,9 @@ namespace Brainary.Commons.Application.Patterns
     /// </summary>
     public interface IReadServiceAsync<T> where T : Entity
     {
-        Task<T?> ReadOne(object id);
+        Task<T?> ReadOne(object id, params Expression<Func<T, object>>[] include);
 
-        IAsyncEnumerable<T> ReadAll();
+        IAsyncEnumerable<T> ReadAll(params Expression<Func<T, object>>[] include);
 
         IAsyncEnumerable<T> ReadMany(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include);
 

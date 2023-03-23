@@ -1,3 +1,4 @@
+using System;
 using System.Linq.Expressions;
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -19,10 +20,10 @@ namespace Brainary.Commons.Data.Patterns
 
         public virtual IEnumerable<T> Find(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            var query = Context.Set<T>().Where(func);
+            var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
-            return query;
+            return query.Where(func);
         }
 
         public virtual IEnumerable<T> Find(ISpecification<T> specification)
@@ -30,19 +31,28 @@ namespace Brainary.Commons.Data.Patterns
             return SpecificationEvaluator<T>.GetQuery(Context.Set<T>().AsQueryable(), specification);
         }
 
-        public virtual IEnumerable<T> FindAll()
+        public virtual IEnumerable<T> FindAll(params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>();
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return query;
         }
 
-        public virtual T? FindById(object id)
+        public virtual T? FindById(object id, params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>().FirstOrDefault(obj => obj.Id == id);
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return query.FirstOrDefault(obj => obj.Id == id);
         }
 
-        public virtual T? FindOne(Expression<Func<T, bool>> func)
+        public virtual T? FindOne(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include)
         {
-            return Context.Set<T>().FirstOrDefault(func);
+            var query = Context.Set<T>().AsQueryable();
+            foreach (var item in include)
+                query = query.Include(item);
+            return query.FirstOrDefault(func);
         }
 
         public virtual bool Exists(Expression<Func<T, bool>> func)

@@ -12,11 +12,11 @@ namespace Brainary.Commons.Data.Patterns
 
         IAsyncEnumerable<T> Find(ISpecification<T> specification);
 
-        IAsyncEnumerable<T> FindAll();
+        IAsyncEnumerable<T> FindAll(params Expression<Func<T, object>>[] include);
 
-        Task<T?> FindById(object id);
+        Task<T?> FindById(object id, params Expression<Func<T, object>>[] include);
 
-        Task<T?> FindOne(Expression<Func<T, bool>> func);
+        Task<T?> FindOne(Expression<Func<T, bool>> func, params Expression<Func<T, object>>[] include);
 
         Task<bool> Exists(Expression<Func<T, bool>> func);
     }
