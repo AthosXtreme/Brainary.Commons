@@ -1,4 +1,3 @@
-using System;
 using System.Linq.Expressions;
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +22,12 @@ namespace Brainary.Commons.Data.Patterns
             var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
+
+            if (include.Length > 1)
+                query = query.AsSplitQuery();
+            else
+                query = query.AsSingleQuery();
+
             return query.Where(func);
         }
 
@@ -36,6 +41,12 @@ namespace Brainary.Commons.Data.Patterns
             var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
+
+            if (include.Length > 1)
+                query = query.AsSplitQuery();
+            else
+                query = query.AsSingleQuery();
+
             return query;
         }
 
@@ -44,6 +55,12 @@ namespace Brainary.Commons.Data.Patterns
             var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
+
+            if (include.Length > 1)
+                query = query.AsSplitQuery();
+            else
+                query = query.AsSingleQuery();
+
             return query.FirstOrDefault(obj => obj.Id == id);
         }
 
@@ -52,6 +69,12 @@ namespace Brainary.Commons.Data.Patterns
             var query = Context.Set<T>().AsQueryable();
             foreach (var item in include)
                 query = query.Include(item);
+
+            if (include.Length > 1)
+                query = query.AsSplitQuery();
+            else
+                query = query.AsSingleQuery();
+
             return query.FirstOrDefault(func);
         }
 
