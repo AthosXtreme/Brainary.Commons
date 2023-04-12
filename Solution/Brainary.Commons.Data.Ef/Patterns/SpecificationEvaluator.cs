@@ -1,5 +1,6 @@
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Brainary.Commons.Data.Patterns
 {
@@ -28,6 +29,11 @@ namespace Brainary.Commons.Data.Patterns
 
             if (specification.IsPagingEnabled)
                 queryable = queryable.Skip(specification.Skip).Take(specification.Take);
+
+            if ((specification.Includes.Count + specification.IncludeStrings.Count) > 1)
+                queryable = queryable.AsSplitQuery();
+            else
+                queryable = queryable.AsSingleQuery();
 
             return queryable;
         }
