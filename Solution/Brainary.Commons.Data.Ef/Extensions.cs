@@ -27,12 +27,21 @@ namespace Brainary.Commons.Data
                 var entityTypeBuilder = entityDelegate();
 
                 var options = t.GetTypeInfo().GetCustomAttribute<EntityOptionsAttribute>() ?? new EntityOptionsAttribute();
-                if (!options.IdentityId)
-                {
-                    var propertyMethod = entityTypeBuilder?.GetType().GetMethod("Property", 0, new Type[] { typeof(string) });
-                    var propertyDelegate = (Func<string, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<string, PropertyBuilder>), entityTypeBuilder, propertyMethod!);
-                    var propertyBuilder = propertyDelegate("Id");
+                var propertyMethod = entityTypeBuilder?.GetType().GetMethod("Property", 0, new Type[] { typeof(string) });
+                var propertyDelegate = (Func<string, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<string, PropertyBuilder>), entityTypeBuilder, propertyMethod!);
+                var propertyBuilder = propertyDelegate("Id");
 
+                // Set MaxLength for array or string Id
+                if (typeof(System.Collections.IEnumerable).IsAssignableFrom(propertyBuilder.Metadata.PropertyInfo!.PropertyType))
+                {
+                    var mlMethod = propertyBuilder?.GetType().GetMethod("HasMaxLength", 0, new Type[] { typeof(int) });
+                    var mlDelegate = (Func<int, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<int, PropertyBuilder>), propertyBuilder, mlMethod!);
+                    mlDelegate(options.MaxLengthId);
+                }
+                
+                // Prevent identity Id when requested
+                if (options.PreventIdentityId)
+                {
                     var vgnMethod = propertyBuilder?.GetType().GetMethod("ValueGeneratedNever", 0, Array.Empty<Type>());
                     var vgnDelegate = (Func<PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<PropertyBuilder>), propertyBuilder, vgnMethod!);
                     vgnDelegate();

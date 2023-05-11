@@ -19,7 +19,6 @@ namespace Brainary.Commons.Domain
 	{
 		[Key]
 		[Display(Order = 0)]
-		[MaxLength(16)] //used when T is text type
 		public new T? Id { get => id != null ? (T?)id : default; set => id = value; }
 	} 
 }
