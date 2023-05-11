@@ -1,10 +1,9 @@
 using System.Reflection;
-using System.Text.Json.Serialization;
 using Brainary.Commons.Data.Annotations;
 using Brainary.Commons.Domain;
-using Brainary.Commons.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Brainary.Commons.Data
@@ -20,11 +19,24 @@ namespace Brainary.Commons.Data
         public static void AutoEntity<T>(this ModelBuilder modelBuilder, Assembly fromAssembly)
         {
             var types = fromAssembly.GetExportedTypes().Where(w => w.IsSubclassOf(typeof(T)));
-            var method = modelBuilder.GetType().GetMethods().First((w) => w.Name == "Entity" && w.IsGenericMethod);
+            var entityMethod = modelBuilder.GetType().GetMethod("Entity", 1, Array.Empty<Type>());
             foreach (var t in types)
             {
-                var generic = method.MakeGenericMethod(t);
-                generic.Invoke(modelBuilder, null);
+                var entityGeneric = entityMethod?.MakeGenericMethod(t);
+                var entityDelegate = (Func<EntityTypeBuilder>)Delegate.CreateDelegate(typeof(Func<EntityTypeBuilder>), modelBuilder, entityGeneric!);
+                var entityTypeBuilder = entityDelegate();
+
+                var options = t.GetTypeInfo().GetCustomAttribute<EntityOptionsAttribute>() ?? new EntityOptionsAttribute();
+                if (!options.IdentityId)
+                {
+                    var propertyMethod = entityTypeBuilder?.GetType().GetMethod("Property", 0, new Type[] { typeof(string) });
+                    var propertyDelegate = (Func<string, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<string, PropertyBuilder>), entityTypeBuilder, propertyMethod!);
+                    var propertyBuilder = propertyDelegate("Id");
+
+                    var vgnMethod = propertyBuilder?.GetType().GetMethod("ValueGeneratedNever", 0, Array.Empty<Type>());
+                    var vgnDelegate = (Func<PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<PropertyBuilder>), propertyBuilder, vgnMethod!);
+                    vgnDelegate();
+                }
             }
         }
 
