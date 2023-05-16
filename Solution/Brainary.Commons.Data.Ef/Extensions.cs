@@ -1,6 +1,5 @@
 using System.Reflection;
 using Brainary.Commons.Data.Annotations;
-using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -191,6 +190,13 @@ namespace Brainary.Commons.Data
                     var defaultValueSqlAttribute = customAttributes.OfType<DefaultValueSqlAttribute>().FirstOrDefault();
                     if (defaultValueSqlAttribute != null)
                         RelationalPropertyExtensions.SetDefaultValueSql(prop, defaultValueSqlAttribute.Statement);
+
+                    var decimalPrecisionAttribute = customAttributes.OfType<DecimalPrecisionAttribute>().FirstOrDefault();
+                    if (decimalPrecisionAttribute != null)
+                    {
+                        prop.SetPrecision(decimalPrecisionAttribute.Precision);
+                        prop.SetScale(decimalPrecisionAttribute.Scale);
+                    }   
                 }
             }
         }

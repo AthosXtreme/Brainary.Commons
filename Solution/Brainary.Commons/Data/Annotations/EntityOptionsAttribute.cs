@@ -1,7 +1,9 @@
-namespace Brainary.Commons.Domain
+using Brainary.Commons.Domain;
+
+namespace Brainary.Commons.Data.Annotations
 {
     /// <summary>
-    /// Options for <see cref="Entity"/>
+    /// Column options for <see cref="Entity"/>
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class EntityOptionsAttribute : Attribute
