@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Reflection;
 using Brainary.Commons.Data.Annotations;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +62,8 @@ namespace Brainary.Commons.Data
             var digits = strLen > 2 ? strLen : 2;
             foreach (IMutableEntityType entityType in types)
             {
-                var idName = entityType.ShortName();
+                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+                var idName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
                 idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
                 entityType.SetTableName(idName);
                 idCount++;
@@ -102,7 +104,9 @@ namespace Brainary.Commons.Data
             var digits = strLen > 2 ? strLen : 2;
             foreach (var (entityType, key) in types)
             {
-                var idName = $"PK_{entityType.ShortName()}";
+                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+                var tableName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
+                var idName = $"PK_{tableName}";
                 idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
                 key.SetName(idName);
                 idCount++;
@@ -127,8 +131,12 @@ namespace Brainary.Commons.Data
                 var entityType = tuple.entityType;
                 var group = tuple.group;
                 var fk = tuple.fk;
+                var entityAttr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+                var entityTableName = entityAttr != null && !string.IsNullOrWhiteSpace(entityAttr.Name) ? entityAttr.Name : entityType.ShortName();
+                var fkAttr = fk.Value.PrincipalEntityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+                var fkTableName = fkAttr != null && !string.IsNullOrWhiteSpace(fkAttr.Name) ? fkAttr.Name : fk.Value.PrincipalEntityType.ShortName();
                 var index = group.Many ? $"_{fk.Index:D2}" : string.Empty;
-                var idName = $"FK_{entityType.ShortName()}_{fk.Value.PrincipalEntityType.ShortName()}{index}";
+                var idName = $"FK_{entityTableName}_{fkTableName}{index}";
                 idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
                 RelationalForeignKeyExtensions.SetConstraintName(fk.Value, idName);
                 idCount++;
@@ -148,7 +156,9 @@ namespace Brainary.Commons.Data
             var digits = strLen > 2 ? strLen : 2;
             foreach (var (entityType, ix) in types)
             {
-                var idName = $"IX_{ix.Index + 1:D2}_{entityType.ShortName()}";
+                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+                var tableName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
+                var idName = $"IX_{ix.Index + 1:D2}_{tableName}";
                 idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
                 ix.Value.SetDatabaseName(idName);
                 idCount++;

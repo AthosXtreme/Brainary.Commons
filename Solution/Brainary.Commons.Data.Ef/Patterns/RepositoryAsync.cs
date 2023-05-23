@@ -28,16 +28,18 @@ namespace Brainary.Commons.Data.Patterns
         public virtual async Task Update(T instance)
         {
             var entry = Context.Entry(instance);
+            var set = Context.Set<T>();
             if (entry.State == EntityState.Detached)
             {
-                var set = Context.Set<T>();
-                T? attachedEntity = await set.FindAsync(instance.Id);
-                if (attachedEntity == null)
-                    throw new EntityDoesNotExistsException();
-
+                T? attachedEntity = await set.FindAsync(instance.Id)
+                    ?? throw new EntityDoesNotExistsException();
                 var attachedEntry = Context.Entry(attachedEntity);
                 attachedEntry.State = EntityState.Modified;
                 attachedEntry.CurrentValues.SetValues(instance);
+            }
+            else
+            {
+                set.Update(instance);
             }
         }
 
@@ -68,16 +70,14 @@ namespace Brainary.Commons.Data.Patterns
         public virtual async Task Remove(T instance)
         {
             var entry = Context.Entry(instance);
+            var set = Context.Set<T>();
             if (entry.State == EntityState.Detached)
             {
-                var set = Context.Set<T>();
-                T? attachedEntity = await set.FindAsync(instance.Id);
-                if (attachedEntity == null)
-                    throw new EntityDoesNotExistsException();
-
-                Context.Entry(instance).State = EntityState.Unchanged;
-                set.Remove(instance);
+                _ = await set.FindAsync(instance.Id)
+                    ?? throw new EntityDoesNotExistsException();
             }
+            Context.Entry(instance).State = EntityState.Unchanged;
+            set.Remove(instance);
         }
 
         public virtual async Task Commit()

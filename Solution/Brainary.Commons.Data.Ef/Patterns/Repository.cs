@@ -28,37 +28,24 @@ namespace Brainary.Commons.Data.Patterns
         public virtual void Update(T instance)
         {
             var entry = Context.Entry(instance);
+            var set = Context.Set<T>();
             if (entry.State == EntityState.Detached)
             {
-                var set = Context.Set<T>();
-                T? attachedEntity = set.Find(instance.Id);
-                if (attachedEntity == null)
-                    throw new EntityDoesNotExistsException();
-
+                T? attachedEntity = set.Find(instance.Id)
+                    ?? throw new EntityDoesNotExistsException();
                 var attachedEntry = Context.Entry(attachedEntity);
                 attachedEntry.State = EntityState.Modified;
                 attachedEntry.CurrentValues.SetValues(instance);
+            }
+            else
+            {
+                set.Update(instance);
             }
         }
 
         public virtual void CreateOrUpdate(T instance)
         {
             Context.Set<T>().Update(instance);
-        }
-
-        public virtual void Remove(T instance)
-        {
-            var entry = Context.Entry(instance);
-            if (entry.State == EntityState.Detached)
-            {
-                var set = Context.Set<T>();
-                T? attachedEntity = set.Find(instance.Id);
-                if (attachedEntity == null)
-                    throw new EntityDoesNotExistsException();
-
-                Context.Entry(instance).State = EntityState.Unchanged;
-                set.Remove(instance);
-            }
         }
 
         public virtual void CreateRange(IEnumerable<T> instances)
@@ -74,6 +61,19 @@ namespace Brainary.Commons.Data.Patterns
         public virtual void RemoveRange(IEnumerable<T> instances)
         {
             Context.RemoveRange(instances);
+        }
+
+        public virtual void Remove(T instance)
+        {
+            var entry = Context.Entry(instance);
+            var set = Context.Set<T>();
+            if (entry.State == EntityState.Detached)
+            {
+                _ = set.Find(instance.Id)
+                    ?? throw new EntityDoesNotExistsException();
+            }
+            Context.Entry(instance).State = EntityState.Unchanged;
+            set.Remove(instance);
         }
 
         public virtual void Commit()
