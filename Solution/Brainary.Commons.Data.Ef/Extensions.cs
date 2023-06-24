@@ -38,7 +38,7 @@ namespace Brainary.Commons.Data
                     var mlDelegate = (Func<int, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<int, PropertyBuilder>), propertyBuilder, mlMethod!);
                     mlDelegate(options.MaxLengthId);
                 }
-                
+
                 // Prevent identity Id when requested
                 if (options.PreventIdentityId)
                 {
@@ -56,17 +56,17 @@ namespace Brainary.Commons.Data
         public static void RemovePluralizingTableName(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
-            var idCount = 1;
             var types = modelBuilder.Model.GetEntityTypes();
-            var strLen = types.Count().ToString().Length;
-            var digits = strLen > 2 ? strLen : 2;
+            var subchars = 5;
+            var digits = 2;
             foreach (IMutableEntityType entityType in types)
             {
-                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-                var idName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
-                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                var idName = RegularTableName(entityType);
+                var chsum = Checksum(idName, digits);
+                var idnLen = idName.Length;
+                idName = idnLen > maxLen ? $"{idName[..(maxLen - subchars)].TrimEnd('_')}_{chsum}{idnLen.ToString($"X{digits}")}" : idName;
                 entityType.SetTableName(idName);
-                idCount++;
+                entityType.SetAnnotation(nameof(RemovePluralizingTableName), true);
             }
         }
 
@@ -78,16 +78,17 @@ namespace Brainary.Commons.Data
         public static void AddTableNamePrefix(this ModelBuilder modelBuilder, string prefix)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
-            var idCount = 1;
             var types = modelBuilder.Model.GetEntityTypes();
-            var strLen = types.Count().ToString().Length;
-            var digits = strLen > 2 ? strLen : 2;
+            var subchars = 5;
+            var digits = 2;
             foreach (var entityType in types)
             {
-                var idName = $"{prefix}{entityType.GetTableName()}";
-                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                var idName = ((bool?)entityType.FindAnnotation(nameof(RemovePluralizingTableName))?.Value ?? false) ? $"{prefix}{RegularTableName(entityType)}" : $"{prefix}{entityType.GetTableName()}";
+                var chsum = Checksum(idName, digits);
+                var idnLen = idName.Length;
+                idName = idnLen > maxLen ? $"{idName[..(maxLen - subchars)].TrimEnd('_')}_{chsum}{idnLen.ToString($"X{digits}")}" : idName;
                 entityType.SetTableName(idName);
-                idCount++;
+                entityType.SetAnnotation(nameof(AddTableNamePrefix), true);
             }
         }
 
@@ -98,18 +99,17 @@ namespace Brainary.Commons.Data
         public static void UseShortNamePk(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
-            var idCount = 1;
             var types = modelBuilder.Model.GetEntityTypes().SelectMany(s => s.GetKeys().Where(w => w.IsPrimaryKey()).Select(e => (s, e)));
-            var strLen = types.Count().ToString().Length;
-            var digits = strLen > 2 ? strLen : 2;
+            var subchars = 5;
+            var digits = 2;
             foreach (var (entityType, key) in types)
             {
-                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-                var tableName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
+                var tableName = RegularTableName(entityType);
                 var idName = $"PK_{tableName}";
-                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
+                var chsum = Checksum(idName, digits);
+                var idnLen = idName.Length;
+                idName = idnLen > maxLen ? $"{idName[..(maxLen - subchars)].TrimEnd('_')}_{chsum}{idnLen.ToString($"X{digits}")}" : idName;
                 key.SetName(idName);
-                idCount++;
             }
         }
 
@@ -120,26 +120,28 @@ namespace Brainary.Commons.Data
         public static void UseShortNameFk(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
-            var idCount = 1;
-            var types = modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetForeignKeys()
-            .GroupBy(k => k.PrincipalEntityType.ShortName(), (k, v) => new { Key = k, Many = v.Count() > 1, Values = v })
-            .SelectMany(group => group.Values.Select((s, i) => new { Index = i, Value = s }).Select(fk => (entityType, group, fk))));
-            var strLen = types.Count().ToString().Length;
-            var digits = strLen > 2 ? strLen : 2;
-            foreach (var tuple in types)
+            var types = modelBuilder.Model.GetEntityTypes().SelectMany(et => et.GetForeignKeys().Select(fk => (et, fk)));
+            var subchars = 5;
+            var digits = 2;
+            foreach (var (entityType, fk) in types)
             {
-                var entityType = tuple.entityType;
-                var group = tuple.group;
-                var fk = tuple.fk;
-                var entityAttr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-                var entityTableName = entityAttr != null && !string.IsNullOrWhiteSpace(entityAttr.Name) ? entityAttr.Name : entityType.ShortName();
-                var fkAttr = fk.Value.PrincipalEntityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-                var fkTableName = fkAttr != null && !string.IsNullOrWhiteSpace(fkAttr.Name) ? fkAttr.Name : fk.Value.PrincipalEntityType.ShortName();
-                var index = group.Many ? $"_{fk.Index:D2}" : string.Empty;
-                var idName = $"FK_{entityTableName}_{fkTableName}{index}";
-                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
-                RelationalForeignKeyExtensions.SetConstraintName(fk.Value, idName);
-                idCount++;
+                if (entityType.IsPropertyBag) // Correct implicitly created entity column names
+                {
+                    foreach (var property in fk.Properties)
+                    {
+                        var principal = property.FindFirstPrincipal()!;
+                        var fkColumnName = $"{principal.DeclaringEntityType.DisplayName()}{principal.Name}";
+                        property.SetColumnName(fkColumnName);
+                    }
+                }
+                var entityTableName = RegularTableName(entityType);
+                var fkTableName = RegularTableName(fk.PrincipalEntityType);
+                var fkColumnNames = string.Join("_", fk.Properties.Select(s => s.GetColumnName()));
+                var idName = $"FK_{entityTableName}_{fkTableName}";
+                var chsum = Checksum(fkColumnNames, digits);
+                idName = (idName.Length + subchars) > maxLen ? $"{idName[..(maxLen - subchars)]}".TrimEnd('_') : idName;
+                idName += $"_{chsum}{fkColumnNames.Length.ToString($"X{digits}")}";
+                RelationalForeignKeyExtensions.SetConstraintName(fk, idName);
             }
         }
 
@@ -150,18 +152,18 @@ namespace Brainary.Commons.Data
         public static void UseShortNameIx(this ModelBuilder modelBuilder)
         {
             var maxLen = modelBuilder.Model.GetMaxIdentifierLength();
-            var idCount = 1;
-            var types = modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetIndexes().Select((s, i) => (entityType, new { Index = i, Value = s })));
-            var strLen = types.Count().ToString().Length;
-            var digits = strLen > 2 ? strLen : 2;
+            var types = modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetIndexes().Select(ix => (entityType, ix)));
+            var subchars = 5;
+            var digits = 2;
             foreach (var (entityType, ix) in types)
             {
-                var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
-                var tableName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
-                var idName = $"IX_{ix.Index + 1:D2}_{tableName}";
-                idName = idName.Length > maxLen ? $"{idName[..(maxLen - digits)]}{idCount.ToString($"D{digits}")}" : idName;
-                ix.Value.SetDatabaseName(idName);
-                idCount++;
+                var tableName = RegularTableName(entityType);
+                var ixColumnNames = string.Join("_", ix.Properties.Select(s => s.GetColumnName()));
+                var chsum = Checksum(ixColumnNames, digits);
+                var idName = $"IX_{tableName}";
+                idName = (idName.Length + subchars) > maxLen ? $"{idName[..(maxLen - subchars)]}".TrimEnd('_') : idName;
+                idName += $"_{chsum}{ixColumnNames.Length.ToString($"X{digits}")}";
+                ix.SetDatabaseName(idName);
             }
         }
 
@@ -206,9 +208,20 @@ namespace Brainary.Commons.Data
                     {
                         prop.SetPrecision(decimalPrecisionAttribute.Precision);
                         prop.SetScale(decimalPrecisionAttribute.Scale);
-                    }   
+                    }
                 }
             }
+        }
+        private static string RegularTableName(IMutableEntityType entityType)
+        {
+            var attr = entityType.ClrType.GetTypeInfo().GetCustomAttribute<TableAttribute>();
+            var idName = attr != null && !string.IsNullOrWhiteSpace(attr.Name) ? attr.Name : entityType.ShortName();
+            return idName;
+        }
+
+        private static string Checksum(string value, int digits)
+        {
+            return value.Aggregate(0, (p, v) => p ^ v).ToString($"X{digits}");
         }
     }
 }
