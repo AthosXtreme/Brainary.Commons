@@ -11,9 +11,9 @@ namespace Brainary.Commons.Extensions
         /// <typeparam name="T">Object type</typeparam>
         /// <param name="instance">Object instance</param>
         /// <returns>Xml string</returns>
-        public static string Serialize<T>(this T instance) where T : class
+        public static string XmlSerialize<T>(this T instance) where T : class
         {
-            return Serialize(instance, null);
+            return XmlSerialize(instance, null);
         }
 
         /// <summary>
@@ -21,33 +21,31 @@ namespace Brainary.Commons.Extensions
         /// </summary>
         /// <typeparam name="T">Object type</typeparam>
         /// <param name="instance">Object instance</param>
-        /// <param name="settings">Prevent XML declaration tag on first line</param>
+        /// <param name="settings">Serialization settings</param>
         /// <returns>Xml string</returns>
-        public static string Serialize<T>(this T instance, XmlWriterSettings? settings) where T : class
+        public static string XmlSerialize<T>(this T instance, XmlWriterSettings? settings) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
-            using (var sw = new StringWriter())
-            {
-                var writer = XmlWriter.Create(sw, settings);
-                serializer.Serialize(writer, instance);
-                return sw.ToString();
-            }
+            using var sw = new StringWriter();
+            var writer = XmlWriter.Create(sw, settings);
+            serializer.Serialize(writer, instance);
+            return sw.ToString();
         }
 
         /// <summary>
         /// Deserialize an xml string to object
         /// </summary>
         /// <typeparam name="T">Expected object type</typeparam>
-        /// <param name="xmlObject">Xml string</param>
+        /// <param name="xml">Xml string</param>
         /// <returns>Object</returns>
-        public static T? Deserialize<T>(this string xmlObject) where T : class
+        public static T? XmlDeserialize<T>(this string xml) where T : class
         {
             var serializer = new XmlSerializer(typeof(T));
 
             StringReader? sr = null;
             try
             {
-                sr = new StringReader(xmlObject);
+                sr = new StringReader(xml);
                 using var xmlReader = new XmlTextReader(sr);
                 sr = null;
                 return (T?)serializer.Deserialize(xmlReader);
