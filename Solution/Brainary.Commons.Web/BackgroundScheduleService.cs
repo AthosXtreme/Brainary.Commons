@@ -1,13 +1,17 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Cronos;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace Brainary.Commons.Web
 {
     /// <summary>
-    /// Base implementation for scheduling a task at intervals as Hosted Service.
+    /// Base implementation for scheduling a task at cron intervals as Hosted Service.
+    /// Using cron expressions from Cronos library: https://github.com/HangfireIO/Cronos
     /// </summary>
     public abstract class BackgroundScheduleService : BackgroundService
     {
+        private const string defaultSchedule = "* */10 * * * *";
+
         private bool executeImmediate;
         private readonly ILogger logger;
 
@@ -18,7 +22,7 @@ namespace Brainary.Commons.Web
 
         protected bool ExecuteImmediate { get => executeImmediate; init => executeImmediate = value; }
 
-        protected TimeSpan Interval { get; init; } = TimeSpan.FromMinutes(1);
+        protected string CronExpression { get; init; } = defaultSchedule;
 
         protected abstract Task Action(CancellationToken stoppingToken);
 
@@ -26,29 +30,49 @@ namespace Brainary.Commons.Web
         {
             async Task execute()
             {
-                try
+                if (!stoppingToken.IsCancellationRequested)
                 {
-                    await Action(stoppingToken);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An exception occurred in a background scheduled task.");
+                    try
+                    {
+                        await Action(stoppingToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex, "An exception occurred in a background scheduled task.");
+                    }
                 }
             }
 
-            if (executeImmediate)
+            CronExpression? schedule = null;
+            try
             {
-                logger.LogDebug("Executing scheduled action immediately.");
-                await execute();
-                executeImmediate = false;
+                schedule = Cronos.CronExpression.Parse(CronExpression, CronFormat.IncludeSeconds);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An exception occurred parsing schedule in a background scheduled task.");
             }
 
-            using var timer = new PeriodicTimer(Interval);
-            logger.LogDebug($"Periodic timer set for {Interval}");
-            while (await timer.WaitForNextTickAsync(stoppingToken))
+            if (schedule != null)
             {
-                logger.LogDebug("Executing scheduled action.");
-                await execute();
+                if (executeImmediate)
+                {
+                    logger.LogDebug("Executing scheduled action immediately on start.");
+                    executeImmediate = false;
+                    await execute();
+                }
+
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    var current = DateTimeOffset.Now;
+                    var dtoffset = schedule.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local);
+                    if (dtoffset.HasValue)
+                    {
+                        var delay = dtoffset.Value.DateTime - current.DateTime;
+                        await Task.Delay(delay, stoppingToken);
+                        await execute();
+                    }
+                } 
             }
         }
     }

@@ -11,6 +11,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Cronos" Version="0.7.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\Brainary.Commons\Brainary.Commons.csproj" />
 	</ItemGroup>
 
