@@ -20,10 +20,5 @@ namespace Brainary.Commons.Domain
 			: base(message, inner)
 		{
 		}
-
-		protected EntityAlreadyExistsException(SerializationInfo info, StreamingContext context)
-			: base(info, context)
-		{
-		}
 	} 
 }

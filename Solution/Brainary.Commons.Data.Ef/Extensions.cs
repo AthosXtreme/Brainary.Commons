@@ -130,7 +130,7 @@ namespace Brainary.Commons.Data
                     foreach (var property in fk.Properties)
                     {
                         var principal = property.FindFirstPrincipal()!;
-                        var fkColumnName = $"{principal.DeclaringEntityType.DisplayName()}{principal.Name}";
+                        var fkColumnName = $"{principal.DeclaringType.DisplayName()}{principal.Name}";
                         property.SetColumnName(fkColumnName);
                     }
                 }

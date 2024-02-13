@@ -34,10 +34,5 @@ namespace Brainary.Commons.Domain
         {
             Code = code;
         }
-
-        protected BusinessException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }
