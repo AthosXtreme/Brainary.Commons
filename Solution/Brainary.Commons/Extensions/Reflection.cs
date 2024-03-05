@@ -35,7 +35,7 @@ namespace Brainary.Commons.Extensions
         /// <returns>Boolean</returns>
         public static bool IsAnonymousType(this Type type)
         {
-            var hasCompilerGeneratedAttribute = type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any();
+            var hasCompilerGeneratedAttribute = type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Length != 0;
             var nameContainsAnonymousType = (type.FullName ?? string.Empty).Contains("AnonymousType");
             var isAnonymousType = hasCompilerGeneratedAttribute && nameContainsAnonymousType;
             return isAnonymousType;
@@ -155,7 +155,7 @@ namespace Brainary.Commons.Extensions
         /// <returns>Dictionary</returns>
         public static IDictionary<string, object?> PropertiesToDictionary(this object obj)
         {
-            return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(prop => prop.PropertyType.IsValueType).ToDictionary(k => k.Name, v => v.GetValue(obj, null));
+            return obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).ToDictionary(k => k.Name, v => v.GetValue(obj, null));
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Brainary.Commons.Extensions
                     break;
             }
 
-            return list;
+            return list.AsEnumerable();
         }
     }
 }
