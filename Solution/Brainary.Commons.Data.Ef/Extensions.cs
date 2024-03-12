@@ -19,7 +19,7 @@ namespace Brainary.Commons.Data
         public static void AutoEntity<T>(this ModelBuilder modelBuilder, Assembly fromAssembly)
         {
             var types = fromAssembly.GetExportedTypes().Where(w => w.IsSubclassOf(typeof(T)));
-            var entityMethod = modelBuilder.GetType().GetMethod("Entity", 1, Array.Empty<Type>());
+            var entityMethod = modelBuilder.GetType().GetMethod("Entity", 1, []);
             foreach (var t in types)
             {
                 var entityGeneric = entityMethod?.MakeGenericMethod(t);
@@ -27,14 +27,14 @@ namespace Brainary.Commons.Data
                 var entityTypeBuilder = entityDelegate();
 
                 var options = t.GetTypeInfo().GetCustomAttribute<EntityOptionsAttribute>() ?? new EntityOptionsAttribute();
-                var propertyMethod = entityTypeBuilder?.GetType().GetMethod("Property", 0, new Type[] { typeof(string) });
+                var propertyMethod = entityTypeBuilder?.GetType().GetMethod("Property", 0, [typeof(string)]);
                 var propertyDelegate = (Func<string, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<string, PropertyBuilder>), entityTypeBuilder, propertyMethod!);
                 var propertyBuilder = propertyDelegate("Id");
 
                 // Set MaxLength for array or string Id
                 if (typeof(System.Collections.IEnumerable).IsAssignableFrom(propertyBuilder.Metadata.PropertyInfo!.PropertyType))
                 {
-                    var mlMethod = propertyBuilder?.GetType().GetMethod("HasMaxLength", 0, new Type[] { typeof(int) });
+                    var mlMethod = propertyBuilder?.GetType().GetMethod("HasMaxLength", 0, [typeof(int)]);
                     var mlDelegate = (Func<int, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<int, PropertyBuilder>), propertyBuilder, mlMethod!);
                     mlDelegate(options.MaxLengthId);
                 }
@@ -42,7 +42,7 @@ namespace Brainary.Commons.Data
                 // Prevent identity Id when requested
                 if (options.PreventIdentityId)
                 {
-                    var vgnMethod = propertyBuilder?.GetType().GetMethod("ValueGeneratedNever", 0, Array.Empty<Type>());
+                    var vgnMethod = propertyBuilder?.GetType().GetMethod("ValueGeneratedNever", 0, []);
                     var vgnDelegate = (Func<PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<PropertyBuilder>), propertyBuilder, vgnMethod!);
                     vgnDelegate();
                 }
@@ -181,11 +181,51 @@ namespace Brainary.Commons.Data
         }
 
         /// <summary>
-        /// Applies known custom atrtibutes for model
+        /// Applies atrtibutes in Data/Annotations for model
         /// </summary>
         /// <param name="modelBuilder">Model builder instance</param>
-        public static void ApplyCustomAttributes(this ModelBuilder modelBuilder)
+        public static void ApplyOtherAnnotations(this ModelBuilder modelBuilder)
         {
+            foreach (var et in modelBuilder.Model.GetEntityTypes())
+            {
+                //Class attributes
+                var etAttrs = et.ClrType.GetCustomAttributes<Annotations.IndexAttribute>(false);
+                if (etAttrs != null && etAttrs.Any())
+                {
+                    foreach (var etAttr in etAttrs)
+                    {
+                        var ixProps = et.FindProperties(etAttr.PropertyNames)!;
+                        var ix = et.AddIndex(ixProps);
+                        ix.IsUnique = etAttr.IsUnique; 
+                    }
+                }
+
+                //Property attributes
+                foreach (var prop in et.GetProperties())
+                {
+                    var memberInfo = (MemberInfo?)prop.PropertyInfo ?? prop.FieldInfo;
+                    if (memberInfo != null)
+                    {
+                        var customAttributes = Attribute.GetCustomAttributes(memberInfo, inherit: false);
+
+                        var computedColumnSqlAttribute = customAttributes.OfType<ComputedColumnSqlAttribute>().FirstOrDefault();
+                        if (computedColumnSqlAttribute != null)
+                            prop.SetComputedColumnSql(computedColumnSqlAttribute.Statement);
+
+                        var defaultValueSqlAttribute = customAttributes.OfType<DefaultValueSqlAttribute>().FirstOrDefault();
+                        if (defaultValueSqlAttribute != null)
+                            prop.SetDefaultValueSql(defaultValueSqlAttribute.Statement);
+
+                        var decimalPrecisionAttribute = customAttributes.OfType<DecimalPrecisionAttribute>().FirstOrDefault();
+                        if (decimalPrecisionAttribute != null)
+                        {
+                            prop.SetPrecision(decimalPrecisionAttribute.Precision);
+                            prop.SetScale(decimalPrecisionAttribute.Scale);
+                        }
+                    }
+                }
+            }
+
             foreach (var tuple in modelBuilder.Model.GetEntityTypes().SelectMany(entityType => entityType.GetProperties().Select(prop => (entityType, prop))))
             {
                 var entityType = tuple.entityType;

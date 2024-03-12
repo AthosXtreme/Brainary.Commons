@@ -1,6 +1,5 @@
 using Brainary.Commons.Domain;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Brainary.Commons.Data.Patterns
 {
