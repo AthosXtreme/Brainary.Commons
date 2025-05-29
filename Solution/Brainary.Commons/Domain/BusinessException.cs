@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace Brainary.Commons.Domain
 {
     /// <summary>

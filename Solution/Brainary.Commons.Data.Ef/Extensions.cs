@@ -34,17 +34,19 @@ namespace Brainary.Commons.Data
                 // Set MaxLength for array or string Id
                 if (typeof(System.Collections.IEnumerable).IsAssignableFrom(propertyBuilder.Metadata.PropertyInfo!.PropertyType))
                 {
-                    var mlMethod = propertyBuilder?.GetType().GetMethod("HasMaxLength", 0, [typeof(int)]);
-                    var mlDelegate = (Func<int, PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<int, PropertyBuilder>), propertyBuilder, mlMethod!);
-                    mlDelegate(options.MaxLengthId);
+                    propertyBuilder.HasMaxLength(options.MaxLengthId);
                 }
 
                 // Prevent identity Id when requested
                 if (options.PreventIdentityId)
                 {
-                    var vgnMethod = propertyBuilder?.GetType().GetMethod("ValueGeneratedNever", 0, []);
-                    var vgnDelegate = (Func<PropertyBuilder>)Delegate.CreateDelegate(typeof(Func<PropertyBuilder>), propertyBuilder, vgnMethod!);
-                    vgnDelegate();
+                    propertyBuilder.ValueGeneratedNever();
+                }
+
+                // Set column name for Id
+                if (!string.IsNullOrWhiteSpace(options.ColumnId))
+                {
+                    propertyBuilder.HasColumnName(options.ColumnId);
                 }
             }
         }

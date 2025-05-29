@@ -17,5 +17,10 @@ namespace Brainary.Commons.Data.Annotations
         /// Set maximum length for Id field (applies to string and array)
         /// </summary>
         public int MaxLengthId { get; set; } = 16;
+
+        /// <summary>
+        /// Set column name for Id field
+        /// </summary>
+        public string? ColumnId { get; set; }
     }
 }

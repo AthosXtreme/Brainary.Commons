@@ -8,27 +8,52 @@ namespace Brainary.Commons.Web
     /// Base implementation for scheduling a task at cron intervals as Hosted Service.
     /// Using cron expressions from Cronos library: https://github.com/HangfireIO/Cronos
     /// </summary>
-    public abstract class BackgroundScheduleService : BackgroundService
+    public abstract class BackgroundScheduleService(ILogger<BackgroundScheduleService> logger) : BackgroundService
     {
-        private const string defaultSchedule = "* */10 * * * *";
+        private const string DefaultSchedule = "* */10 * * * *";
 
         private bool executeImmediate;
-        private readonly ILogger logger;
-
-        public BackgroundScheduleService(ILogger<BackgroundScheduleService> logger)
-        {
-            this.logger = logger;
-        }
+        private readonly ILogger logger = logger;
 
         protected bool ExecuteImmediate { get => executeImmediate; init => executeImmediate = value; }
 
-        protected string CronExpression { get; init; } = defaultSchedule;
+        protected string CronExpression { get; init; } = DefaultSchedule;
 
         protected abstract Task Action(CancellationToken stoppingToken);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            async Task execute()
+            CronExpression schedule;
+            try
+            {
+                schedule = Cronos.CronExpression.Parse(CronExpression, CronFormat.IncludeSeconds);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An exception occurred parsing schedule in a background scheduled task.");
+                return;
+            }
+
+            if (executeImmediate)
+            {
+                logger.LogDebug("Executing scheduled action immediately on start.");
+                executeImmediate = false;
+                await Execute();
+            }
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var current = DateTimeOffset.Now;
+                var dtoffset = schedule.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local);
+                if (!dtoffset.HasValue) continue;
+                var delay = dtoffset.Value.DateTime - current.DateTime;
+                await Task.Delay(delay, stoppingToken);
+                await Execute();
+            }
+
+            return;
+
+            async Task Execute()
             {
                 if (!stoppingToken.IsCancellationRequested)
                 {
@@ -41,38 +66,6 @@ namespace Brainary.Commons.Web
                         logger.LogError(ex, "An exception occurred in a background scheduled task.");
                     }
                 }
-            }
-
-            CronExpression? schedule = null;
-            try
-            {
-                schedule = Cronos.CronExpression.Parse(CronExpression, CronFormat.IncludeSeconds);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An exception occurred parsing schedule in a background scheduled task.");
-            }
-
-            if (schedule != null)
-            {
-                if (executeImmediate)
-                {
-                    logger.LogDebug("Executing scheduled action immediately on start.");
-                    executeImmediate = false;
-                    await execute();
-                }
-
-                while (!stoppingToken.IsCancellationRequested)
-                {
-                    var current = DateTimeOffset.Now;
-                    var dtoffset = schedule.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local);
-                    if (dtoffset.HasValue)
-                    {
-                        var delay = dtoffset.Value.DateTime - current.DateTime;
-                        await Task.Delay(delay, stoppingToken);
-                        await execute();
-                    }
-                } 
             }
         }
     }
