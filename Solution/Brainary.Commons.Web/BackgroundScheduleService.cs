@@ -11,7 +11,10 @@ namespace Brainary.Commons.Web
     public abstract class BackgroundScheduleService(ILogger<BackgroundScheduleService> logger) : BackgroundService
     {
         private const string DefaultSchedule = "* */10 * * * *";
+        private const string MinuteControlFormat = "yyyyMMddHHmm";
 
+        private bool minuteControlEnabled;
+        private string minuteControlStamp = string.Empty;
         private bool executeImmediate;
         private readonly ILogger logger = logger;
 
@@ -27,6 +30,9 @@ namespace Brainary.Commons.Web
             try
             {
                 schedule = Cronos.CronExpression.Parse(CronExpression, CronFormat.IncludeSeconds);
+                var secondExpression = CronExpression.Split(' ')[0];
+                minuteControlEnabled = secondExpression == "*" || secondExpression.Contains("second");
+
             }
             catch (Exception ex)
             {
@@ -38,33 +44,32 @@ namespace Brainary.Commons.Web
             {
                 logger.LogDebug("Executing scheduled action immediately on start.");
                 executeImmediate = false;
-                await Execute();
+                await RunAction(stoppingToken);
             }
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var current = DateTimeOffset.Now;
-                var dtoffset = schedule.GetNextOccurrence(DateTimeOffset.Now, TimeZoneInfo.Local);
-                if (!dtoffset.HasValue) continue;
-                var delay = dtoffset.Value.DateTime - current.DateTime;
-                await Task.Delay(delay, stoppingToken);
-                await Execute();
+                var current = DateTime.UtcNow;
+                var next = schedule.GetNextOccurrence(current);
+                if (!next.HasValue || (minuteControlEnabled && next.Value.ToString(MinuteControlFormat) == minuteControlStamp)) continue;
+                var delay = next - current;
+                await Task.Delay(delay.Value, stoppingToken);
+                await RunAction(stoppingToken);
             }
+        }
 
-            return;
-
-            async Task Execute()
+        private async Task RunAction(CancellationToken stoppingToken)
+        {
+            if (!stoppingToken.IsCancellationRequested)
             {
-                if (!stoppingToken.IsCancellationRequested)
+                try
                 {
-                    try
-                    {
-                        await Action(stoppingToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex, "An exception occurred in a background scheduled task.");
-                    }
+                    minuteControlStamp = DateTime.UtcNow.ToString(MinuteControlFormat);
+                    await Action(stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An exception occurred in a background scheduled task.");
                 }
             }
         }
