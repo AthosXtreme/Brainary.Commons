@@ -1,43 +1,67 @@
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Brainary.Commons.Extensions
 {
     public static partial class Extensions
     {
         /// <summary>
-        /// Obtain display description attribute from enum value
+        /// Obtain <see cref="DisplayAttribute"/> attached to an enum value
+        /// </summary>
+        /// <param name="value">Enum value</param>
+        public static DisplayAttribute? GetDisplayAttribute(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute;
+        }
+
+        /// <summary>
+        /// Obtain description from <see cref="DisplayAttribute"/> attached to an enum value
         /// </summary>
         /// <param name="value">Enum value</param>
         /// <returns>Description string</returns>
         public static string GetDescription(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
-            return attribute == null ? value.ToString("G") : attribute?.Description ?? string.Empty;
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute?.Description ?? string.Empty;
         }
 
         /// <summary>
-        /// Obtain display name attribute from enum value
+        /// Obtain name from <see cref="DisplayAttribute"/> attached to an enum value
         /// </summary>
         /// <param name="value">Enum value</param>
-        /// <returns>Display Name string</returns>
+        /// <returns>Display Name string or enum string value</returns>
         public static string GetDisplayName(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
-            return attribute == null ? value.ToString("G") : attribute?.Name ?? string.Empty;
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute?.Name ?? value.ToString("G");
         }
 
         /// <summary>
-        /// Obtain display short name attribute from enum value
+        /// Obtain short name from <see cref="DisplayAttribute"/> attached to an enum value
         /// </summary>
         /// <param name="value">Enum value</param>
-        /// <returns>Short Name string</returns>
+        /// <returns>Short Name string or enum string value</returns>
         public static string GetShortName(this Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
-            var attribute = field != null ? Attribute.GetCustomAttribute(field, typeof(DisplayAttribute)) as DisplayAttribute : null;
-            return attribute == null ? value.ToString("G") : attribute?.ShortName ?? string.Empty;
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute?.ShortName ?? value.ToString("G");
+        }
+
+        /// <summary>
+        /// Obtain group name from <see cref="DisplayAttribute"/> attached to an enum value
+        /// </summary>
+        /// <param name="value">Enum value</param>
+        /// <returns>Group Name string</returns>
+        public static string GetGroupName(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = field?.GetCustomAttribute<DisplayAttribute>();
+            return attribute?.GroupName ?? string.Empty;
         }
 
         /// <summary>
